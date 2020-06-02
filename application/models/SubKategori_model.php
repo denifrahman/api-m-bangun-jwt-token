@@ -21,6 +21,7 @@ class SubKategori_Model extends CI_Model
      */
     public function getAll_SubKategori()
     {
+        $this->db->where('produkkategorisubaktif','1');
         $q = $this->db->get($this->SubKategori_table);
         return $q->result();
     }
@@ -32,6 +33,7 @@ class SubKategori_Model extends CI_Model
     public function getAllByIdKategori_SubKategori($id)
     {
         $this->db->where('produkkategoriid',$id);
+        $this->db->where('produkkategorisubaktif','1');
         $q = $this->db->get($this->SubKategori_table);
         return $q->result();
     }

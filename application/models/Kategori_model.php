@@ -21,6 +21,7 @@ class Kategori_Model extends CI_Model
      */
     public function getAll_kategori()
     {
+        $this->db->where('produkkategoriaktif','1');
         $q = $this->db->get($this->kategori_table);
         return $q->result();
     }
@@ -32,6 +33,7 @@ class Kategori_Model extends CI_Model
     public function getById_Kategori($id)
     {
         $this->db->where('produkkategoriid',$id);
+        $this->db->where('produkkategoriaktif','1');
         $q = $this->db->get($this->kategori_table);
         return $q->result();
     }
