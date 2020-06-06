@@ -14,10 +14,47 @@ class Users extends \Restserver\Libraries\REST_Controller
         $this->load->library('crypt');
     }
 
+       /**
+     * User Get Data
+     * --------------------
+     * --------------------------
+     * @method : GET
+     * @link: api/User/getAllById
+     */
+    public function getById_get()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $userid = $this->get('userid');
+        // Load Authorization Token Library
+        $this->load->library('Authorization_Token');
+
+        /**
+         * User Token Validation
+         */
+        $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $data = $this->UserModel->getById_user($userid);
+            $return_data = [
+                'data_user' => $data,
+            ];
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'data' => $return_data
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }else{
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'message' => $is_valid_token['message'],
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
     /**
      * User Register
      * --------------------------
-     * @param: fullname
+     * @param: usernamalengkap
      * @param: username
      * @param: email
      * @param: password
@@ -33,20 +70,20 @@ class Users extends \Restserver\Libraries\REST_Controller
         $_POST = $this->security->xss_clean($_POST);
 
         # Form Validation
-        $this->form_validation->set_rules('fullname', 'Full Name', 'trim|required|max_length[50]');
+        $this->form_validation->set_rules('usernamalengkap', 'Nama lengkap', 'trim|required|max_length[50]');
         $this->form_validation->set_rules(
-            'username',
-            'Username',
-            'trim|required|is_unique[users.username]|alpha_numeric|max_length[20]',
-            array('is_unique' => 'This %s already exists please enter another username')
-        );
-        $this->form_validation->set_rules(
-            'email',
-            'Email',
-            'trim|required|valid_email|max_length[80]|is_unique[users.email]',
+            'useremail',
+            'UserEmail',
+            'trim|required|valid_email|max_length[80]|is_unique[user.useremail]',
             array('is_unique' => 'This %s already exists please enter another email address')
         );
-        $this->form_validation->set_rules('password', 'Password', 'trim|required|max_length[100]');
+        $this->form_validation->set_rules(
+            'usertelp',
+            'Usertelp',
+            'trim|required|max_length[80]|is_unique[user.usertelp]',
+            array('is_unique' => 'This %s already exists please enter another phone')
+        );
+        $this->form_validation->set_rules('userpassword', 'UserPassword', 'trim|required|max_length[100]');
         if ($this->form_validation->run() == FALSE) {
             // Form Validation Errors
             $message = array(
@@ -58,21 +95,33 @@ class Users extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
             $insert_data = [
-                'full_name' => $this->input->post('fullname', TRUE),
-                'email' => $this->input->post('email', TRUE),
-                'username' => $this->input->post('username', TRUE),
-                'password' => md5($this->input->post('password', TRUE)),
-                'created_at' => time(),
-                'updated_at' => time(),
+                'usernamalengkap' => $this->input->post('usernamalengkap', TRUE),
+                'useremail' => $this->input->post('useremail', TRUE),
+                'usertelp' => $this->input->post('usertelp', TRUE),
+                'userpassword' => $this->crypt->encrypt($this->input->post('userpassword'), 'abcdef0123456789'),
+                'usercreate' => time(),
+                'useraktif' => '1',
+                'userstatusid' => '1',
             ];
 
             // Insert User in Database
             $output = $this->UserModel->insert_user($insert_data);
             if ($output > 0 and !empty($output)) {
+                // response data
+                $response_data = [
+                    'usernamalengkap' => $this->input->post('usernamalengkap', TRUE),
+                    'useremail' => $this->input->post('useremail', TRUE),
+                    'usertelp' => $this->input->post('usertelp', TRUE),
+                    'userpassword' => $this->input->post('userpassword'),
+                    'usercreate' => time(),
+                    'useraktif' => '1',
+                    'userstatusid' => '1',
+                ];
                 // Success 200 Code Send
                 $message = [
                     'status' => true,
-                    'message' => "User registration successful"
+                    'message' => "User registration successful",
+                    'data' => $response_data
                 ];
                 $this->response($message, REST_Controller::HTTP_OK);
             } else {
@@ -104,7 +153,7 @@ class Users extends \Restserver\Libraries\REST_Controller
         $_POST = $this->security->xss_clean($_POST);
 
         # Form Validation
-        $this->form_validation->set_rules('usernama', 'Usernama', 'trim|required');
+        $this->form_validation->set_rules('useremail', 'Useremail', 'trim|required');
         $this->form_validation->set_rules('userpassword', 'Userpassword', 'trim|required|max_length[100]');
         if ($this->form_validation->run() == FALSE) {
             // Form Validation Errors
@@ -117,7 +166,7 @@ class Users extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
             // Load Login Function
-            $output = $this->UserModel->user_login($this->input->post('usernama'), $this->crypt->encrypt($this->input->post('userpassword'), 'abcdef0123456789'));
+            $output = $this->UserModel->login_user($this->input->post('useremail'), $this->crypt->encrypt($this->input->post('userpassword'), 'abcdef0123456789'));
             if (!empty($output) and $output != FALSE) {
                 // Load Authorization Token Library
                 $this->load->library('Authorization_Token');
@@ -156,7 +205,7 @@ class Users extends \Restserver\Libraries\REST_Controller
     {
         include_once APPPATH . "vendor/autoload.php";
         // $client = new GetStream\StreamChat\Client(getenv("fjj3mgynqwkg"), getenv("257n6pcwfxchut48vkypxu4ymwzjvpy92bkzw83jkwhe3jwqkpe6qzt58amna9ve"));
-        
+
         $client = new GetStream\StreamChat\Client('fjj3mgynqwkg', '257n6pcwfxchut48vkypxu4ymwzjvpy92bkzw83jkwhe3jwqkpe6qzt58amna9ve');
         $token = $client->createToken("deni");
 
@@ -168,8 +217,48 @@ class Users extends \Restserver\Libraries\REST_Controller
             'role' => 'admin',
             'name' => 'deni',
         ];
-        
+
         $bob = $client->updateUser($bob);
         $this->response($token, REST_Controller::HTTP_NOT_FOUND);
+    }
+    function editFoto_post()
+    {
+        $this->form_validation->set_rules('userid', 'Userid', 'trim|required');
+        if ($this->form_validation->run() == TRUE) {
+            if (isset($_FILES["image"]["name"])) {
+                // Make sure you have created this directory already
+                $target_dir = "assets/";
+                // Generate a random name 
+                $userid = $this->input->post('userid');
+                $file_name= base_url().$target_dir.$userid . '.' . $_POST['ext'];
+                $target_file = $target_dir . $userid . '.' . $_POST['ext'];
+                $check = getimagesize($_FILES["image"]["tmp_name"]);
+                if ($check !== false) {
+                    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                        $response = $this->UserModel->editFotoById_user($userid,$file_name);
+                        $message = array(
+                            'status' => true,
+                            'update'=>$response,
+                            'message' => "Foto berhasil di ubah"
+                        );
+                        $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+                    } else {
+                        $this->response('error', REST_Controller::HTTP_NOT_FOUND);
+                    }
+                } else {
+                    $this->response('File is not an image', REST_Controller::HTTP_NOT_FOUND);
+                }
+            } else {
+                $this->response(["error" => "Please provide a image to upload."], REST_Controller::HTTP_NOT_FOUND);
+            }
+        }else{
+            $message = array(
+                'status' => false,
+                'error' => $this->form_validation->error_array(),
+                'message' => validation_errors()
+            );
+
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
     }
 }

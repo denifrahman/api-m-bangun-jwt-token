@@ -34,7 +34,7 @@ class Produk_Model extends CI_Model
             $this->db->like('produknama',$key);
         }
         if($idSubKategori != ''){
-            $this->db->like('produknama',$key);
+            $this->db->where('produkkategorisubid',$idSubKategori);
         }
         $this->db->where('Produkaktif','1');
         $q = $this->db->get($this->Produk_table);
