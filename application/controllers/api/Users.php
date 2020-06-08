@@ -15,11 +15,12 @@ class Users extends \Restserver\Libraries\REST_Controller
     }
 
        /**
-     * User Get Data
+     * User Get Data By Id
      * --------------------
      * --------------------------
      * @method : GET
-     * @link: api/User/getAllById
+     * @param: userid
+     * @link: api/User/getById
      */
     public function getById_get()
     {
@@ -143,7 +144,7 @@ class Users extends \Restserver\Libraries\REST_Controller
      * @param: password
      * --------------------------
      * @method : POST
-     * @link: api/user/login
+     * @link: api/users/login
      */
     public function login_post()
     {
@@ -201,6 +202,7 @@ class Users extends \Restserver\Libraries\REST_Controller
             }
         }
     }
+
     public function createUser_get()
     {
         include_once APPPATH . "vendor/autoload.php";
@@ -221,6 +223,16 @@ class Users extends \Restserver\Libraries\REST_Controller
         $bob = $client->updateUser($bob);
         $this->response($token, REST_Controller::HTTP_NOT_FOUND);
     }
+
+    /**
+     * User edit foto
+     * --------------------
+     * @param: userid
+     * --------------------------
+     * @method : POST
+     * @link: api/users/editFoto
+     */
+
     function editFoto_post()
     {
         $this->form_validation->set_rules('userid', 'Userid', 'trim|required');
@@ -250,6 +262,74 @@ class Users extends \Restserver\Libraries\REST_Controller
                 }
             } else {
                 $this->response(["error" => "Please provide a image to upload."], REST_Controller::HTTP_NOT_FOUND);
+            }
+        }else{
+            $message = array(
+                'status' => false,
+                'error' => $this->form_validation->error_array(),
+                'message' => validation_errors()
+            );
+
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+    /**
+     * Update akun
+     * --------------------
+     * @param: _imageFileSiup, _imageFileAkte, idKategori,idSubKategori, namaPerusahaan
+     * --------------------------
+     * @method : POST
+     * @link: api/users/updateAkunPremium
+     */
+
+    function updateAkunPremium_post()
+    {
+        $this->form_validation->set_rules('userId', 'UserId', 'trim|required');
+        $this->form_validation->set_rules('idSubKategori', 'idSubKategori', 'trim|required');
+        $this->form_validation->set_rules('idKategori', 'idKategori', 'trim|required');
+        if ($this->form_validation->run() == TRUE) {
+            if (isset($_FILES["imageFileSiup"]["name"]) && isset($_FILES["imageFileAkte"]["name"])) {
+                // Make sure you have created this directory already
+                $target_dir = "assets/";
+                // Generate a random name 
+                $userid = $this->input->post('userId');
+                $userPerusahaan = $this->input->post('userPerusahaan');
+                $idKategori = $this->input->post('idKategori');
+                $idSubKategori = $this->input->post('idSubKategori');
+                $file_name_akte= base_url().$target_dir.$userid .'_akte'. '.' . $_POST['ext'];
+                $file_name_siup= base_url().$target_dir.$userid .'_siup'. '.' . $_POST['ext'];
+                $target_file_akte = $target_dir . $userid . '_akte'.'.' . $_POST['ext'];
+                $target_file_siup = $target_dir . $userid . '_siup'.'.' . $_POST['ext'];
+                $check = getimagesize($_FILES["imageFileSiup"]["tmp_name"]);
+                if ($check !== false) {
+                    if (move_uploaded_file($_FILES["imageFileSiup"]["tmp_name"], $target_file_siup) && move_uploaded_file($_FILES["imageFileAkte"]["tmp_name"], $target_file_akte)) {
+                        $response = $this->UserModel->updateAkunPremium_user($userid,$file_name_akte,$file_name_siup,$userPerusahaan,$idSubKategori,$idKategori);
+                        $message = array(
+                            'status' => true,
+                            'update'=>$response,
+                            'message' => "Foto berhasil di ubah"
+                        );
+                        $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+                    } else {
+                        $this->response('error', REST_Controller::HTTP_NOT_FOUND);
+                    }
+                } else {
+                    $this->response('File is not an image', REST_Controller::HTTP_NOT_FOUND);
+                }
+            } else {
+                $userid = $this->input->post('userId');
+                $userPerusahaan = $this->input->post('userPerusahaan');
+                $idKategori = $this->input->post('idKategori');
+                $idSubKategori = $this->input->post('idSubKategori');
+                $file_name_akte= '';
+                $file_name_siup= '';
+                $response = $this->UserModel->updateAkunPremium_user($userid,$file_name_akte,$file_name_siup,$userPerusahaan,$idSubKategori,$idKategori);
+                $message = array(
+                    'status' => true,
+                    // 'update'=>$response,
+                    'message' => "Update tanpa foto"
+                );
+                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
         }else{
             $message = array(

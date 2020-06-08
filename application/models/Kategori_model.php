@@ -25,6 +25,21 @@ class Kategori_Model extends CI_Model
         $q = $this->db->get($this->kategori_table);
         return $q->result();
     }
+      /**
+     * Kategori Get Data Filter Param
+     * --------------------
+     * --------------------------
+     * @method : GET
+     * @param : produkkategoriakses
+     * @link: api/Kategori/getAllByFilterParam
+     */
+    public function getAllByFilterParam_kategori($akses)
+    {
+        $this->db->where('produkkategoriaktif','1');
+        $this->db->where('produkkategoriakses', $akses);
+        $q = $this->db->get($this->kategori_table);
+        return $q->result();
+    }
      /**
      * SubKategori get data by id
      * ----------------------------------

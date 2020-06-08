@@ -14,7 +14,7 @@ class Kategori extends \Restserver\Libraries\REST_Controller
     }
 
     /**
-     * Kategori Get Data
+     * Kategori Get All Data
      * --------------------
      * --------------------------
      * @method : GET
@@ -46,11 +46,48 @@ class Kategori extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
-      /**
-     * Kategori Get Data
+
+     /**
+     * Kategori Get Data Filter Param
      * --------------------
      * --------------------------
      * @method : GET
+     * @param : produkkategoriakses
+     * @link: api/Kategori/getAllByFilterParam
+     */
+    public function getAllByFilterParam_get()
+    {
+        header("Access-Control-Allow-Origin: *");
+    
+        // Load Authorization Token Library
+        $this->load->library('Authorization_Token');
+        $akses = $this->input->get('akses');
+        /**
+         * User Token Validation
+         */
+        $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $data = $this->Kategori_Model->getAllByFilterParam_Kategori($akses);
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'data' => $data
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }else{
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'message' => $is_valid_token['message'],
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
+      /**
+     * Kategori Get Data All By id 
+     * --------------------
+     * --------------------------
+     * @method : GET
+     * @param : kategoriid
      * @link: api/Kategori/getAllById
      */
     public function getAllById_get($id)

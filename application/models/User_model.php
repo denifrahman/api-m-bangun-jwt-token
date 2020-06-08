@@ -50,4 +50,34 @@ class User_Model extends CI_Model
         $q = $this->db->get($this->user_table);
         return $q->row();
     }
+       /**
+     * Update akun
+     * --------------------
+     * @param: _imageFileSiup, _imageFileAkte, idKategori,idSubKategori, namaPerusahaan
+     * --------------------------
+     * @method : POST
+     * @link: api/users/updateAkunPremium
+     */
+    public function updateAkunPremium_user($userid = '',$file_name_akte = '',$file_name_siup = '',$userPerusahaan = '' ,$idSubKategori = '',$idKategori = '')
+    {
+
+        // Update user
+            if($file_name_akte == '' && $file_name_siup == ''){
+                $update_data = [
+                    'userperusahaan' =>  $userPerusahaan,
+                    'produkkategorisubid'=>$idSubKategori,
+                    'produkkategoriid'=>$idKategori
+                ];
+            }else{
+                $update_data = [
+                    'usersiup' =>  $file_name_siup,
+                    'userakteperusahaan' =>  $file_name_akte,
+                    'userperusahaan' =>  $userPerusahaan,
+                    'produkkategorisubid'=>$idSubKategori,
+                    'produkkategoriid'=>$idKategori
+                ];
+            }
+        // $this->db->where('userid',$userid);
+        return $this->db->update($this->user_table, $update_data,['userid'=>$userid]);
+    }
 }
