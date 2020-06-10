@@ -2,7 +2,7 @@
 
 class User_Model extends CI_Model
 {
-    protected $user_table = 'user';
+    protected $user_table = 'v_user';
 
     /**
      * Use Registration
@@ -24,7 +24,7 @@ class User_Model extends CI_Model
     {
         $this->db->where('useremail', $username);
         $this->db->where('userpassword', $password);
-        $q = $this->db->get($this->user_table);
+        $q = $this->db->get('user');
 
         return $q->row();
     }
@@ -42,12 +42,12 @@ class User_Model extends CI_Model
             'userfoto' =>  $file_name
         ];
         // $this->db->where('userid',$userid);
-        return $this->db->update($this->user_table, $update_data,['userid'=>$userid]);
+        return $this->db->update('user', $update_data,['userid'=>$userid]);
     }
     public function getById_user($userid)
     {
         $this->db->where('userid',$userid);
-        $q = $this->db->get($this->user_table);
+        $q = $this->db->get('v_user');
         return $q->row();
     }
        /**
@@ -78,6 +78,33 @@ class User_Model extends CI_Model
                 ];
             }
         // $this->db->where('userid',$userid);
-        return $this->db->update($this->user_table, $update_data,['userid'=>$userid]);
+        return $this->db->update('user', $update_data,['userid'=>$userid]);
+    }
+       /**
+     * Update akun
+     * --------------------
+     * @param: $userid = '',$usernama = '',$usertelp = '',$userpassword = ''
+     * --------------------------
+     * @method : POST
+     * @link: api/users/updateDataAkun
+     */
+    public function updateDataAkun_user($userid = '',$usernamalengkap = '',$usertelp = '',$userpassword = '' )
+    {
+
+        // Update user
+            if($userpassword == ''){
+                $update_data = [
+                    'usernamalengkap' =>  $usernamalengkap,
+                    'usertelp'=>$usertelp,
+                ];
+            }else{
+                $update_data = [
+                    'usernamalengkap' =>  $usernamalengkap,
+                    'userpassword' =>  $userpassword,
+                    'usertelp'=>$usertelp,
+                ];
+            }
+        // $this->db->where('userid',$userid);
+        return $this->db->update('user', $update_data,['userid'=>$userid]);
     }
 }

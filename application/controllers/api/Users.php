@@ -14,7 +14,7 @@ class Users extends \Restserver\Libraries\REST_Controller
         $this->load->library('crypt');
     }
 
-       /**
+    /**
      * User Get Data By Id
      * --------------------
      * --------------------------
@@ -33,7 +33,7 @@ class Users extends \Restserver\Libraries\REST_Controller
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
             $data = $this->UserModel->getById_user($userid);
             $return_data = [
                 'data_user' => $data,
@@ -43,7 +43,7 @@ class Users extends \Restserver\Libraries\REST_Controller
                 'data' => $return_data
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        }else{
+        } else {
             $message = array(
                 'status' => $is_valid_token['status'],
                 'message' => $is_valid_token['message'],
@@ -242,15 +242,15 @@ class Users extends \Restserver\Libraries\REST_Controller
                 $target_dir = "assets/";
                 // Generate a random name 
                 $userid = $this->input->post('userid');
-                $file_name= base_url().$target_dir.$userid . '.' . $_POST['ext'];
+                $file_name = base_url() . $target_dir . $userid . '.' . $_POST['ext'];
                 $target_file = $target_dir . $userid . '.' . $_POST['ext'];
                 $check = getimagesize($_FILES["image"]["tmp_name"]);
                 if ($check !== false) {
                     if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                        $response = $this->UserModel->editFotoById_user($userid,$file_name);
+                        $response = $this->UserModel->editFotoById_user($userid, $file_name);
                         $message = array(
                             'status' => true,
-                            'update'=>$response,
+                            'update' => $response,
                             'message' => "Foto berhasil di ubah"
                         );
                         $this->response($message, REST_Controller::HTTP_NOT_FOUND);
@@ -263,7 +263,7 @@ class Users extends \Restserver\Libraries\REST_Controller
             } else {
                 $this->response(["error" => "Please provide a image to upload."], REST_Controller::HTTP_NOT_FOUND);
             }
-        }else{
+        } else {
             $message = array(
                 'status' => false,
                 'error' => $this->form_validation->error_array(),
@@ -273,6 +273,7 @@ class Users extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
+
     /**
      * Update akun
      * --------------------
@@ -281,7 +282,6 @@ class Users extends \Restserver\Libraries\REST_Controller
      * @method : POST
      * @link: api/users/updateAkunPremium
      */
-
     function updateAkunPremium_post()
     {
         $this->form_validation->set_rules('userId', 'UserId', 'trim|required');
@@ -296,17 +296,17 @@ class Users extends \Restserver\Libraries\REST_Controller
                 $userPerusahaan = $this->input->post('userPerusahaan');
                 $idKategori = $this->input->post('idKategori');
                 $idSubKategori = $this->input->post('idSubKategori');
-                $file_name_akte= base_url().$target_dir.$userid .'_akte'. '.' . $_POST['ext'];
-                $file_name_siup= base_url().$target_dir.$userid .'_siup'. '.' . $_POST['ext'];
-                $target_file_akte = $target_dir . $userid . '_akte'.'.' . $_POST['ext'];
-                $target_file_siup = $target_dir . $userid . '_siup'.'.' . $_POST['ext'];
+                $file_name_akte = base_url() . $target_dir . $userid . '_akte' . '.' . $_POST['ext'];
+                $file_name_siup = base_url() . $target_dir . $userid . '_siup' . '.' . $_POST['ext'];
+                $target_file_akte = $target_dir . $userid . '_akte' . '.' . $_POST['ext'];
+                $target_file_siup = $target_dir . $userid . '_siup' . '.' . $_POST['ext'];
                 $check = getimagesize($_FILES["imageFileSiup"]["tmp_name"]);
                 if ($check !== false) {
                     if (move_uploaded_file($_FILES["imageFileSiup"]["tmp_name"], $target_file_siup) && move_uploaded_file($_FILES["imageFileAkte"]["tmp_name"], $target_file_akte)) {
-                        $response = $this->UserModel->updateAkunPremium_user($userid,$file_name_akte,$file_name_siup,$userPerusahaan,$idSubKategori,$idKategori);
+                        $response = $this->UserModel->updateAkunPremium_user($userid, $file_name_akte, $file_name_siup, $userPerusahaan, $idSubKategori, $idKategori);
                         $message = array(
                             'status' => true,
-                            'update'=>$response,
+                            'update' => $response,
                             'message' => "Foto berhasil di ubah"
                         );
                         $this->response($message, REST_Controller::HTTP_NOT_FOUND);
@@ -321,9 +321,9 @@ class Users extends \Restserver\Libraries\REST_Controller
                 $userPerusahaan = $this->input->post('userPerusahaan');
                 $idKategori = $this->input->post('idKategori');
                 $idSubKategori = $this->input->post('idSubKategori');
-                $file_name_akte= '';
-                $file_name_siup= '';
-                $response = $this->UserModel->updateAkunPremium_user($userid,$file_name_akte,$file_name_siup,$userPerusahaan,$idSubKategori,$idKategori);
+                $file_name_akte = '';
+                $file_name_siup = '';
+                $response = $this->UserModel->updateAkunPremium_user($userid, $file_name_akte, $file_name_siup, $userPerusahaan, $idSubKategori, $idKategori);
                 $message = array(
                     'status' => true,
                     // 'update'=>$response,
@@ -331,7 +331,47 @@ class Users extends \Restserver\Libraries\REST_Controller
                 );
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
-        }else{
+        } else {
+            $message = array(
+                'status' => false,
+                'error' => $this->form_validation->error_array(),
+                'message' => validation_errors()
+            );
+
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+    /**
+     * Update akun
+     * --------------------
+     * @param: $userid, $usernama, $usertelp, $userpassword
+     * --------------------------
+     * @method : POST
+     * @link: api/users/updateDataAkun
+     */
+    function updateDataAkun_post()
+    {
+        $this->form_validation->set_rules('userid', 'UserId', 'trim|required');
+        $userpassword = $this->input->post('userpassword');
+        if ($this->form_validation->run() == TRUE) {
+            if (!isset($userid)){
+                $userid = $this->input->post('userid');
+                $usernamalengkap = $this->input->post('usernamalengkap');
+                $usertelp = $this->input->post('usertelp');
+                if($userpassword != ''){
+                    $passwordEncypted =  $this->crypt->encrypt($userpassword, 'abcdef0123456789');
+                }else{
+                    $passwordEncypted =  '';
+                }
+                $response = $this->UserModel->updateDataAkun_user($userid, $usernamalengkap, $usertelp, $passwordEncypted);
+                // Generate a random name 
+                $message = array(
+                    'status' => $response,
+                    'message' => "Data berhasil di ubah"
+                );
+                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+            }
+        } else {
             $message = array(
                 'status' => false,
                 'error' => $this->form_validation->error_array(),
