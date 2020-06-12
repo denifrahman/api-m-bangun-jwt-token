@@ -1,24 +1,25 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 use Restserver\Libraries\REST_Controller;
 
 require APPPATH . '/libraries/REST_Controller.php';
- 
-class Produk extends \Restserver\Libraries\REST_Controller
+
+class Pengajuan extends \Restserver\Libraries\REST_Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
-        // Load Produk Model
-        $this->load->model('Produk_model', 'Produk_Model');
-        $this->load->library('crypt'); 
+        // Load Pengajuan Model
+        $this->load->model('Pengajuan_model', 'Pengajuan_Model');
+        $this->load->library('crypt');
     }
 
     /**
-     * Produk Get Data
+     * Pengajuan Get Data
      * --------------------
      * --------------------------
      * @method : GET
-     * @link: api/Produk/getAll
+     * @link: api/Pengajuan/getAll
      */
     public function getAllByParam_get()
     {
@@ -28,7 +29,7 @@ class Produk extends \Restserver\Libraries\REST_Controller
         $idSubKategori = $this->get('sub');
         $key = $this->get('key');
         header("Access-Control-Allow-Origin: *");
-    
+
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
 
@@ -36,16 +37,16 @@ class Produk extends \Restserver\Libraries\REST_Controller
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Produk_Model->getAllByParam_Produk($idKecamatan,$idKota,$idProvinsi, $idSubKategori,$key);
+        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
+            $data = $this->Pengajuan_Model->getAllByParam_Pengajuan($idKecamatan, $idKota, $idProvinsi, $idSubKategori, $key);
             $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
                 'data' => $data,
-                'last'=>$qry
+                'last' => $qry
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        }else{
+        } else {
             $message = array(
                 'status' => $is_valid_token['status'],
                 'message' => $is_valid_token['message'],
@@ -53,17 +54,17 @@ class Produk extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
-      /**
-     * Produk Get Data
+    /**
+     * Pengajuan Get Data
      * --------------------
      * --------------------------
      * @method : GET
-     * @link: api/Produk/getAllById
+     * @link: api/Pengajuan/getAllById
      */
     public function getAllById_get($id)
     {
         header("Access-Control-Allow-Origin: *");
-    
+
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
 
@@ -71,14 +72,14 @@ class Produk extends \Restserver\Libraries\REST_Controller
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Produk_Model->getById_Produk($id);
+        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
+            $data = $this->Pengajuan_Model->getById_Pengajuan($id);
             $message = array(
                 'status' => $is_valid_token['status'],
                 'data' => $data
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        }else{
+        } else {
             $message = array(
                 'status' => $is_valid_token['status'],
                 'message' => $is_valid_token['message'],
@@ -86,7 +87,7 @@ class Produk extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
-      /**
+    /**
      * Update akun
      * --------------------
      * @param: _imageFileSiup, _imageFileAkte, idKategori,idSubKategori, namaPerusahaan
@@ -103,6 +104,9 @@ class Produk extends \Restserver\Libraries\REST_Controller
         $this->form_validation->set_rules('produktinggi', 'produktinggi', 'trim|required');
         $this->form_validation->set_rules('produkbahan', 'produkbahan', 'trim|required');
         $this->form_validation->set_rules('produkbudget', 'produkbudget', 'trim|required');
+        $this->form_validation->set_rules('id_provinsi', 'id_provinsi', 'trim|required');
+        $this->form_validation->set_rules('id_kota', 'id_kota', 'trim|required');
+        $this->form_validation->set_rules('id_kecamatan', 'id_kecamatan', 'trim|required');
         if ($this->form_validation->run() == TRUE) {
             // Make sure you have created this directory already
             $target_dir = "assets/";
@@ -113,7 +117,12 @@ class Produk extends \Restserver\Libraries\REST_Controller
             $produktinggi = $this->input->post('produktinggi');
             $produkbahan = $this->input->post('produkbahan');
             $produkbudget = $this->input->post('produkbudget');
-            $idSubKategori = $this->input->post('idSubKategori');
+            $idSubKategori = $this->input->post('produkkategorisubid');
+            $produknama = $this->input->post('produknama');
+            $produkalamat = $this->input->post('produkalamat');
+            $idprovinsi = $this->input->post('id_provinsi');
+            $idkota = $this->input->post('id_kota');
+            $idkecamatan = $this->input->post('id_kecamatan');
             $file_name_produkthumbnail = base_url() . $target_dir . $userid . '_produkthumbnail' . '.' . $_POST['ext'];
             $target_file_produkthumbnail = $target_dir . $userid . '_produkthumbnail' . '.' . $_POST['ext'];
             $file_name_produkfoto1 = base_url() . $target_dir . $userid . '_produkfoto1' . '.' . $_POST['ext'];
@@ -128,27 +137,39 @@ class Produk extends \Restserver\Libraries\REST_Controller
             if ($check !== false) {
                 if (move_uploaded_file($_FILES["produkthumbnail"]["tmp_name"], $target_file_produkthumbnail) && move_uploaded_file($_FILES["produkfoto1"]["tmp_name"], $target_file_produkfoto1) && move_uploaded_file($_FILES["produkfoto2"]["tmp_name"], $target_file_produkfoto2) && move_uploaded_file($_FILES["produkfoto3"]["tmp_name"], $target_file_produkfoto3) && move_uploaded_file($_FILES["produkfoto4"]["tmp_name"], $target_file_produkfoto4)) {
                     $data_post = array(
-                        'userid'=>$userid,
-                        'produkthumbnail'=>$file_name_produkthumbnail,
-                        'produkfoto1'=>$file_name_produkfoto1,
-                        'produkfoto2'=>$file_name_produkfoto2,
-                        'produkfoto3'=>$file_name_produkfoto3,
-                        'produkfoto4'=>$file_name_produkfoto4,
-                        'produkpanjang'=>$produkpanjang,
-                        'produklebar'=>$produklebar,
-                        'produktinggi'=>$produktinggi,
-                        'produkbahan'=>$produkbahan,
-                        'produkbudget'=>$produkbudget,
-                        'produkkategorisubid' =>$idSubKategori
+                        'userid' => $userid,
+                        'produknama' => $produknama,
+                        'produkthumbnail' => $file_name_produkthumbnail,
+                        'produkfoto1' => $file_name_produkfoto1,
+                        'produkfoto2' => $file_name_produkfoto2,
+                        'produkfoto3' => $file_name_produkfoto3,
+                        'produkfoto4' => $file_name_produkfoto4,
+                        'produkpanjang' => $produkpanjang,
+                        'produklebar' => $produklebar,
+                        'produktinggi' => $produktinggi,
+                        'produkbahan' => $produkbahan,
+                        'produkbudget' => $produkbudget,
+                        'produkkategorisubid' => $idSubKategori,
+                        'id_provinsi' => $idprovinsi,
+                        'id_kota' => $idkota,
+                        'id_kecamatan' => $idkecamatan,
+                        'produkalamat' => $produkalamat,
 
                     );
-                    $response = $this->Pengajuan_model->pengajuanRqt_user($data_post);
-                    $message = array(
-                        'status' => true,
-                        'update' => $response,
-                        'message' => "Foto berhasil di ubah"
-                    );
-                    $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+                    $response = $this->Pengajuan_Model->insert_Pengajuan($data_post);
+                    if ($response) {
+                        $message = array(
+                            'status' => $response,
+                            'message' => "Pengajuan berhasil"
+                        );
+                        $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+                    } else {
+                        $message = array(
+                            'status' => $response,
+                            'message' => "Pengajuan gagal, periksa jaringan atau lengkapi jika ada data yang kurang"
+                        );
+                        $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+                    }
                 } else {
                     $this->response('error', REST_Controller::HTTP_NOT_FOUND);
                 }
