@@ -107,6 +107,7 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
         $this->form_validation->set_rules('id_provinsi', 'id_provinsi', 'trim|required');
         $this->form_validation->set_rules('id_kota', 'id_kota', 'trim|required');
         $this->form_validation->set_rules('id_kecamatan', 'id_kecamatan', 'trim|required');
+        $this->form_validation->set_rules('waktupengajuan', 'id_kecamatan', 'trim|required');
         if ($this->form_validation->run() == TRUE) {
             // Make sure you have created this directory already
             $target_dir = "assets/";
@@ -123,6 +124,7 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
             $idprovinsi = $this->input->post('id_provinsi');
             $idkota = $this->input->post('id_kota');
             $idkecamatan = $this->input->post('id_kecamatan');
+            $waktupengajuan = $this->input->post('waktupengajuan');
             $file_name_produkthumbnail = base_url() . $target_dir . $userid . '_produkthumbnail' . '.' . $_POST['ext'];
             $target_file_produkthumbnail = $target_dir . $userid . '_produkthumbnail' . '.' . $_POST['ext'];
             $file_name_produkfoto1 = base_url() . $target_dir . $userid . '_produkfoto1' . '.' . $_POST['ext'];
@@ -154,6 +156,7 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
                         'id_kota' => $idkota,
                         'id_kecamatan' => $idkecamatan,
                         'produkalamat' => $produkalamat,
+                        'produkwaktupengajuan' => $waktupengajuan,
 
                     );
                     $response = $this->Pengajuan_Model->insert_Pengajuan($data_post);
