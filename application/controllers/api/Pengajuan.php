@@ -102,12 +102,12 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
         $this->form_validation->set_rules('produkpanjang', 'produkpanjang', 'trim|required');
         $this->form_validation->set_rules('produklebar', 'produklebar', 'trim|required');
         $this->form_validation->set_rules('produktinggi', 'produktinggi', 'trim|required');
-        $this->form_validation->set_rules('produkbahan', 'produkbahan', 'trim|required');
+        $this->form_validation->set_rules('produkdeskripsi', 'produkdeskripsi', 'trim|required');
         $this->form_validation->set_rules('produkbudget', 'produkbudget', 'trim|required');
         $this->form_validation->set_rules('id_provinsi', 'id_provinsi', 'trim|required');
         $this->form_validation->set_rules('id_kota', 'id_kota', 'trim|required');
         $this->form_validation->set_rules('id_kecamatan', 'id_kecamatan', 'trim|required');
-        $this->form_validation->set_rules('waktupengajuan', 'id_kecamatan', 'trim|required');
+        $this->form_validation->set_rules('produkwaktupengerjaan', 'produkwaktupengerjaan', 'trim|required');
         if ($this->form_validation->run() == TRUE) {
             // Make sure you have created this directory already
             $target_dir = "assets/";
@@ -116,7 +116,7 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
             $produkpanjang = $this->input->post('produkpanjang');
             $produklebar = $this->input->post('produklebar');
             $produktinggi = $this->input->post('produktinggi');
-            $produkbahan = $this->input->post('produkbahan');
+            $produkdeskripsi = $this->input->post('produkdeskripsi');
             $produkbudget = $this->input->post('produkbudget');
             $idSubKategori = $this->input->post('produkkategorisubid');
             $produknama = $this->input->post('produknama');
@@ -124,7 +124,7 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
             $idprovinsi = $this->input->post('id_provinsi');
             $idkota = $this->input->post('id_kota');
             $idkecamatan = $this->input->post('id_kecamatan');
-            $waktupengajuan = $this->input->post('waktupengajuan');
+            $produkwaktupengerjaan = $this->input->post('produkwaktupengerjaan');
             $file_name_produkthumbnail = base_url() . $target_dir . $userid . '_produkthumbnail' . '.' . $_POST['ext'];
             $target_file_produkthumbnail = $target_dir . $userid . '_produkthumbnail' . '.' . $_POST['ext'];
             $file_name_produkfoto1 = base_url() . $target_dir . $userid . '_produkfoto1' . '.' . $_POST['ext'];
@@ -149,30 +149,20 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
                         'produkpanjang' => $produkpanjang,
                         'produklebar' => $produklebar,
                         'produktinggi' => $produktinggi,
-                        'produkbahan' => $produkbahan,
+                        'produkdeskripsi' => $produkdeskripsi,
                         'produkbudget' => $produkbudget,
                         'produkkategorisubid' => $idSubKategori,
                         'id_provinsi' => $idprovinsi,
                         'id_kota' => $idkota,
                         'id_kecamatan' => $idkecamatan,
                         'produkalamat' => $produkalamat,
-                        'produkwaktupengajuan' => $waktupengajuan,
-
+                        'produkwaktupengerjaan' => $produkwaktupengerjaan,
                     );
                     $response = $this->Pengajuan_Model->insert_Pengajuan($data_post);
-                    if ($response) {
-                        $message = array(
-                            'status' => $response,
-                            'message' => "Pengajuan berhasil"
-                        );
-                        $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-                    } else {
-                        $message = array(
-                            'status' => $response,
-                            'message' => "Pengajuan gagal, periksa jaringan atau lengkapi jika ada data yang kurang"
-                        );
-                        $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-                    }
+                    $message = array(
+                        'status' => $response,
+                    );
+                    $this->response($message, REST_Controller::HTTP_NOT_FOUND);
                 } else {
                     $this->response('error', REST_Controller::HTTP_NOT_FOUND);
                 }

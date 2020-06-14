@@ -35,9 +35,9 @@ class Users extends \Restserver\Libraries\REST_Controller
         $is_valid_token = $this->authorization_token->validateToken();
         if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
             $data = $this->UserModel->getById_user($userid);
-            $return_data = [
+            $return_data = array(
                 'data_user' => $data,
-            ];
+            );
             $message = array(
                 'status' => $is_valid_token['status'],
                 'data' => $return_data
@@ -95,7 +95,7 @@ class Users extends \Restserver\Libraries\REST_Controller
 
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $insert_data = [
+            $insert_data = array(
                 'usernamalengkap' => $this->input->post('usernamalengkap', TRUE),
                 'useremail' => $this->input->post('useremail', TRUE),
                 'usertelp' => $this->input->post('usertelp', TRUE),
@@ -103,13 +103,13 @@ class Users extends \Restserver\Libraries\REST_Controller
                 'usercreate' => time(),
                 'useraktif' => '1',
                 'userstatusid' => '1',
-            ];
+            );
 
             // Insert User in Database
             $output = $this->UserModel->insert_user($insert_data);
             if ($output > 0 and !empty($output)) {
                 // response data
-                $response_data = [
+                $response_data = array(
                     'usernamalengkap' => $this->input->post('usernamalengkap', TRUE),
                     'useremail' => $this->input->post('useremail', TRUE),
                     'usertelp' => $this->input->post('usertelp', TRUE),
@@ -117,20 +117,20 @@ class Users extends \Restserver\Libraries\REST_Controller
                     'usercreate' => time(),
                     'useraktif' => '1',
                     'userstatusid' => '1',
-                ];
+                );
                 // Success 200 Code Send
-                $message = [
+                $message = array(
                     'status' => true,
                     'message' => "User registration successful",
                     'data' => $response_data
-                ];
+                );
                 $this->response($message, REST_Controller::HTTP_OK);
             } else {
                 // Error
-                $message = [
+                $message = array(
                     'status' => FALSE,
                     'message' => "Not Register Your Account."
-                ];
+                );
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
         }
@@ -180,24 +180,24 @@ class Users extends \Restserver\Libraries\REST_Controller
 
                 $user_token = $this->authorization_token->generateToken($token_data);
 
-                $return_data = [
+                $return_data = array(
                     'data_user' => $output,
                     'token' => $user_token,
-                ];
+                );
 
                 // Login Success
-                $message = [
+                $message = array(
                     'status' => true,
                     'data' => $return_data,
                     'message' => "User login successful"
-                ];
+                );
                 $this->response($message, REST_Controller::HTTP_OK);
             } else {
                 // Login Error
-                $message = [
+                $message = array(
                     'status' => FALSE,
                     'message' => "Invalid Username or Password"
-                ];
+                );
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
         }
@@ -214,11 +214,11 @@ class Users extends \Restserver\Libraries\REST_Controller
         // // with an expiration time
         // $expiration = (new DateTime())->getTimestamp() + 3600;
         // $token = $client->createToken("bob-1", $expiration);
-        $bob = [
+        $bob = array(
             'id' => 'deni',
             'role' => 'admin',
             'name' => 'deni',
-        ];
+        );
 
         $bob = $client->updateUser($bob);
         $this->response($token, REST_Controller::HTTP_NOT_FOUND);
@@ -261,7 +261,7 @@ class Users extends \Restserver\Libraries\REST_Controller
                     $this->response('File is not an image', REST_Controller::HTTP_NOT_FOUND);
                 }
             } else {
-                $this->response(["error" => "Please provide a image to upload."], REST_Controller::HTTP_NOT_FOUND);
+                $this->response(array("error" => "Please provide a image to upload."), REST_Controller::HTTP_NOT_FOUND);
             }
         } else {
             $message = array(
@@ -287,50 +287,48 @@ class Users extends \Restserver\Libraries\REST_Controller
         $this->form_validation->set_rules('userId', 'UserId', 'trim|required');
         $this->form_validation->set_rules('idSubKategori', 'idSubKategori', 'trim|required');
         $this->form_validation->set_rules('idKategori', 'idKategori', 'trim|required');
+
         if ($this->form_validation->run() == TRUE) {
-            if (isset($_FILES["imageFileSiup"]["name"]) && isset($_FILES["imageFileAkte"]["name"])) {
-                // Make sure you have created this directory already
-                $target_dir = "assets/";
-                // Generate a random name 
-                $userid = $this->input->post('userId');
+
+            $userid = $this->input->post('userId');
+            $idKategori = $this->input->post('idKategori');
+            $idSubKategori = $this->input->post('idSubKategori');
+            $target_dir = "assets/";
+            $file_name_akte = '';
+            $file_name_siup = '';
+            $file_name_ktp = '';
+            $userPerusahaan = '';
+
+            if ($idKategori == '1' || $idKategori == '4') {
                 $userPerusahaan = $this->input->post('userPerusahaan');
-                $idKategori = $this->input->post('idKategori');
-                $idSubKategori = $this->input->post('idSubKategori');
                 $file_name_akte = base_url() . $target_dir . $userid . '_akte' . '.' . $_POST['ext'];
                 $file_name_siup = base_url() . $target_dir . $userid . '_siup' . '.' . $_POST['ext'];
                 $target_file_akte = $target_dir . $userid . '_akte' . '.' . $_POST['ext'];
                 $target_file_siup = $target_dir . $userid . '_siup' . '.' . $_POST['ext'];
-                $check = getimagesize($_FILES["imageFileSiup"]["tmp_name"]);
-                if ($check !== false) {
-                    if (move_uploaded_file($_FILES["imageFileSiup"]["tmp_name"], $target_file_siup) && move_uploaded_file($_FILES["imageFileAkte"]["tmp_name"], $target_file_akte)) {
-                        $response = $this->UserModel->updateAkunPremium_user($userid, $file_name_akte, $file_name_siup, $userPerusahaan, $idSubKategori, $idKategori);
-                        $message = array(
-                            'status' => true,
-                            'update' => $response,
-                            'message' => "Foto berhasil di ubah"
-                        );
-                        $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-                    } else {
-                        $this->response('error', REST_Controller::HTTP_NOT_FOUND);
-                    }
-                } else {
-                    $this->response('File is not an image', REST_Controller::HTTP_NOT_FOUND);
-                }
-            } else {
-                $userid = $this->input->post('userId');
-                $userPerusahaan = $this->input->post('userPerusahaan');
-                $idKategori = $this->input->post('idKategori');
-                $idSubKategori = $this->input->post('idSubKategori');
-                $file_name_akte = '';
-                $file_name_siup = '';
-                $response = $this->UserModel->updateAkunPremium_user($userid, $file_name_akte, $file_name_siup, $userPerusahaan, $idSubKategori, $idKategori);
-                $message = array(
-                    'status' => true,
-                    // 'update'=>$response,
-                    'message' => "Update tanpa foto"
-                );
-                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+                move_uploaded_file($_FILES["imageFileSiup"]["tmp_name"], $target_file_siup);
+                move_uploaded_file($_FILES["imageFileAkte"]["tmp_name"], $target_file_akte);
             }
+
+            if ($idKategori == '2') {
+                $file_name_ktp = base_url() . $target_dir . $userid . '_ktp' . '.' . $_POST['ext'];
+                $target_file_akte = $target_dir . $userid . '_ktp' . '.' . $_POST['ext'];
+                move_uploaded_file($_FILES["imageFileKtp"]["tmp_name"], $target_file_akte);
+            }
+            $update_data = array(
+                'userid' => $userid,
+                'produkkategorisubid' => $idSubKategori,
+                'produkkategoriid' => $idKategori,
+                'usersiup' => $file_name_siup,
+                'userakteperusahaan' => $file_name_akte,
+                'userktp' => $file_name_ktp,
+                'userperusahaan' => $userPerusahaan,
+            );
+            $response = $this->UserModel->updateAkunPremium_user($update_data);
+            $message = array(
+                'status' => $response,
+                'message' => "Update berhasil"
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
             $message = array(
                 'status' => false,
@@ -341,6 +339,7 @@ class Users extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
+
     /**
      * Update akun
      * --------------------
@@ -354,14 +353,14 @@ class Users extends \Restserver\Libraries\REST_Controller
         $this->form_validation->set_rules('userid', 'UserId', 'trim|required');
         $userpassword = $this->input->post('userpassword');
         if ($this->form_validation->run() == TRUE) {
-            if (!isset($userid)){
+            if (!isset($userid)) {
                 $userid = $this->input->post('userid');
                 $usernamalengkap = $this->input->post('usernamalengkap');
                 $usertelp = $this->input->post('usertelp');
-                if($userpassword != ''){
-                    $passwordEncypted =  $this->crypt->encrypt($userpassword, 'abcdef0123456789');
-                }else{
-                    $passwordEncypted =  '';
+                if ($userpassword != '') {
+                    $passwordEncypted = $this->crypt->encrypt($userpassword, 'abcdef0123456789');
+                } else {
+                    $passwordEncypted = '';
                 }
                 $response = $this->UserModel->updateDataAkun_user($userid, $usernamalengkap, $usertelp, $passwordEncypted);
                 // Generate a random name 
