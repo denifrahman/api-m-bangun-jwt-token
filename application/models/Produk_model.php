@@ -42,6 +42,7 @@ class Produk_Model extends CI_Model
         if($idSubKategori != ''){
             $this->db->where('produkkategorisubid',$idSubKategori);
         }
+        $this->db->order_by("produkid", "desc");
         $this->db->where('Produkaktif','1');
         $q = $this->db->get($this->Produk_table);
         return $q->result();

@@ -98,7 +98,6 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
     function pengajuanRqt_post()
     {
         $this->form_validation->set_rules('userid', 'userid', 'trim|required');
-        $this->form_validation->set_rules('produkkategorisubid', 'produkkategorisubid', 'trim|required');
         $this->form_validation->set_rules('produkpanjang', 'produkpanjang', 'trim|required');
         $this->form_validation->set_rules('produklebar', 'produklebar', 'trim|required');
         $this->form_validation->set_rules('produktinggi', 'produktinggi', 'trim|required');
@@ -118,7 +117,6 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
             $produktinggi = $this->input->post('produktinggi');
             $produkdeskripsi = $this->input->post('produkdeskripsi');
             $produkbudget = $this->input->post('produkbudget');
-            $idSubKategori = $this->input->post('produkkategorisubid');
             $produknama = $this->input->post('produknama');
             $produkalamat = $this->input->post('produkalamat');
             $idprovinsi = $this->input->post('id_provinsi');
@@ -151,7 +149,6 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
                         'produktinggi' => $produktinggi,
                         'produkdeskripsi' => $produkdeskripsi,
                         'produkbudget' => $produkbudget,
-                        'produkkategorisubid' => $idSubKategori,
                         'id_provinsi' => $idprovinsi,
                         'id_kota' => $idkota,
                         'id_kecamatan' => $idkecamatan,

@@ -51,9 +51,9 @@ class News extends \Restserver\Libraries\REST_Controller
      * --------------------
      * --------------------------
      * @method : GET
-     * @link: api/News/getAllById
+     * @link: api/News/getById
      */
-    public function getAllById_get($id)
+    public function getById_get()
     {
         header("Access-Control-Allow-Origin: *");
     
@@ -65,6 +65,7 @@ class News extends \Restserver\Libraries\REST_Controller
          */
         $is_valid_token = $this->authorization_token->validateToken();
         if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $id = $this->get('id');
             $data = $this->News_Model->getById_News($id);
             $message = array(
                 'status' => $is_valid_token['status'],
