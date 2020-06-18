@@ -3,14 +3,14 @@
 use Restserver\Libraries\REST_Controller;
 
 require APPPATH . '/libraries/REST_Controller.php';
- 
+
 class Produk extends \Restserver\Libraries\REST_Controller
 {
     public function __construct() {
         parent::__construct();
         // Load Produk Model
         $this->load->model('Produk_model', 'Produk_Model');
-        $this->load->library('crypt'); 
+        $this->load->library('crypt');
     }
 
     /**
@@ -29,8 +29,10 @@ class Produk extends \Restserver\Libraries\REST_Controller
         $key = $this->get('key');
         $userId = $this->get('userid');
         $stproduk = $this->get('stp');
+        $produkId = $this->get('pro_id');
+
         header("Access-Control-Allow-Origin: *");
-    
+
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
 
@@ -39,7 +41,7 @@ class Produk extends \Restserver\Libraries\REST_Controller
          */
         $is_valid_token = $this->authorization_token->validateToken();
         if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Produk_Model->getAllByParam_Produk($idKecamatan,$idKota,$idProvinsi, $idSubKategori,$key,$userId,$stproduk);
+            $data = $this->Produk_Model->getAllByParam_Produk($idKecamatan,$idKota,$idProvinsi, $idSubKategori,$key,$userId,$stproduk,$produkId);
             $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
@@ -62,10 +64,10 @@ class Produk extends \Restserver\Libraries\REST_Controller
      * @method : GET
      * @link: api/Produk/getAllById
      */
-    public function getAllById_get($id)
+    public function getById_get($id)
     {
         header("Access-Control-Allow-Origin: *");
-    
+
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
 

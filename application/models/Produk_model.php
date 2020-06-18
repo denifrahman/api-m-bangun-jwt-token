@@ -19,13 +19,16 @@ class Produk_Model extends CI_Model
      * @param: Produkname or email address
      * @param: password
      */
-    public function getAllByParam_Produk($idKecamatan = '',$idKota = '',$idProvinsi = '', $idSubKategori = '',$key = '', $userId = '',$stproduk = '')
+    public function getAllByParam_Produk($idKecamatan = '',$idKota = '',$idProvinsi = '', $idSubKategori = '',$key = '', $userId = '',$stproduk = '',$produkId = '')
     {
         if($idKecamatan != ''){
             $this->db->where('id_kecamatan',$idKecamatan);
         }
         if($userId != ''){
             $this->db->where('userid',$userId);
+        }
+        if($produkId != ''){
+            $this->db->where('produkid',$produkId);
         }
         if($stproduk != ''){
             $this->db->where('statusnama',$stproduk);
@@ -34,7 +37,7 @@ class Produk_Model extends CI_Model
             $this->db->where('id_kota',$idKota);
         }
         if($idProvinsi != ''){
-            $this->db->where('id_provinsi',$idKota);
+            $this->db->where('id_provinsi',$idProvinsi);
         }
         if($key != ''){
             $this->db->like('produknama',$key);
