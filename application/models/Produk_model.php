@@ -47,6 +47,7 @@ class Produk_Model extends CI_Model
         }
         $this->db->order_by("produkid", "desc");
         $this->db->where('Produkaktif','1');
+        $this->db->where('Produkstatusid','3');
         $q = $this->db->get($this->Produk_table);
         return $q->result();
     }
