@@ -41,13 +41,15 @@ class Produk_Model extends CI_Model
         }
         if($key != ''){
             $this->db->like('produknama',$key);
+            $this->db->where('Produkstatusid','3');
         }
         if($idSubKategori != ''){
             $this->db->where('produkkategorisubid',$idSubKategori);
+            $this->db->where('Produkstatusid','3');
+            $this->db->where('Produkaktif','1');
         }
         $this->db->order_by("produkid", "desc");
-        $this->db->where('Produkaktif','1');
-        $this->db->where('Produkstatusid','3');
+
         $q = $this->db->get($this->Produk_table);
         return $q->result();
     }
