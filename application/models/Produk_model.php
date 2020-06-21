@@ -65,4 +65,14 @@ class Produk_Model extends CI_Model
         $q = $this->db->get($this->Produk_table);
         return $q->result();
     }
+     /**
+     * getCount Produk By user
+     * ----------------------------------
+     * @param: $userId
+     */
+    public function getCountByUserId_Produk($userId)
+    {
+        $q = $this->db->query("select getCountProdukByUserid('$userId') as count");
+        return $q->row();
+    }
 }

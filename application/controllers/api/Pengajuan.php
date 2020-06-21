@@ -10,7 +10,7 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
     {
         parent::__construct();
         // Load Pengajuan Model
-        $this->load->model('Pengajuan_model', 'Pengajuan_Model');
+        $this->load->model('Pengajuan_model', 'Pengajuan_Model', 'Produk_Model', 'Produk_model');
         $this->load->library('crypt');
     }
 
@@ -123,15 +123,17 @@ class Pengajuan extends \Restserver\Libraries\REST_Controller
             $idkota = $this->input->post('id_kota');
             $idkecamatan = $this->input->post('id_kecamatan');
             $produkwaktupengerjaan = $this->input->post('produkwaktupengerjaan');
-            $file_name_produkthumbnail = base_url() . $target_dir . $userid . '_produkthumbnail' . '.' . $_POST['ext'];
+
+            $result = $this->Produk_Model->getCountByUserId_Produk($userid);
+            $file_name_produkthumbnail = base_url() . $target_dir . $userid . '_produkthumbnail' . $result->count . '.' . $_POST['ext'];
             $target_file_produkthumbnail = $target_dir . $userid . '_produkthumbnail' . '.' . $_POST['ext'];
-            $file_name_produkfoto1 = base_url() . $target_dir . $userid . '_produkfoto1' . '.' . $_POST['ext'];
+            $file_name_produkfoto1 = base_url() . $target_dir . $userid . '_produkfoto1' . $result->count . '.' . $_POST['ext'];
             $target_file_produkfoto1 = $target_dir . $userid . '_produkfoto1' . '.' . $_POST['ext'];
-            $file_name_produkfoto2 = base_url() . $target_dir . $userid . '_produkfoto2' . '.' . $_POST['ext'];
-            $target_file_produkfoto2 = $target_dir . $userid . '_produkfoto2' . '.' . $_POST['ext'];
-            $file_name_produkfoto3 = base_url() . $target_dir . $userid . '_produkfoto3' . '.' . $_POST['ext'];
+            $file_name_produkfoto2 = base_url() . $target_dir . $userid . '_produkfoto2' .  $result->count .  '.' . $_POST['ext'];
+            $target_file_produkfoto2 = $target_dir . $userid . '_produkfoto2' .'.' . $_POST['ext'];
+            $file_name_produkfoto3 = base_url() . $target_dir . $userid . '_produkfoto3' .   $result->count . '.' . $_POST['ext'];
             $target_file_produkfoto3 = $target_dir . $userid . '_produkfoto3' . '.' . $_POST['ext'];
-            $file_name_produkfoto4 = base_url() . $target_dir . $userid . '_produkfoto4' . '.' . $_POST['ext'];
+            $file_name_produkfoto4 = base_url() . $target_dir . $userid . '_produkfoto4' .   $result->count . '.' . $_POST['ext'];
             $target_file_produkfoto4 = $target_dir . $userid . '_produkfoto4' . '.' . $_POST['ext'];
             $check = getimagesize($_FILES["produkthumbnail"]["tmp_name"]);
             if ($check !== false) {
