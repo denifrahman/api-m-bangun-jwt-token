@@ -4,3 +4,6 @@ RewriteCond $1 !^(index\.php|assets|uploads)
 #Your public folder names
 
 RewriteRule ^(.*)$ index.php?/$1 [L]
+<FilesMatch ".(eot|ttf|otf|woff)">
+    Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
