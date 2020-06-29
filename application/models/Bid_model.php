@@ -190,6 +190,20 @@ class Bid_Model extends CI_Model
         $q = $this->db->get('v_bid');
         return $q->result();
     }
+    /**
+     * Get Bid by produk id
+     * --------------------
+     * --------------------------
+     * @method : GET
+     * @link: api/Bid/getByUserIdAndStatusId
+     */
+    public function getBidByProdukId_Bid($produkid)
+    {
+        $this->db->where('produkid', $produkid);
+        $this->db->where('statusnama', 'Progress');
+        $q = $this->db->get('v_bid');
+        return $q->row();
+    }
 
      /**
      * update Bid

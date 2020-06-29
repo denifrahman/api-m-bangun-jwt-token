@@ -28,12 +28,12 @@ class Bid extends \Restserver\Libraries\REST_Controller
                 </span>
                 </center>';
 
-            $list_tile = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->userbidnama . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . date('d-m-Y', strtotime($customers->bidcreate)) . '</a><p style="color:blue;">' . number_format($customers->bidprice) . ' | (' . $customers->statusnama . ')</p></div></div></span>';
+            $list_tile = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->userbidnama . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . date('d-m-Y', strtotime($customers->bidcreate)) . '</a><p style="color:green;">' . number_format($customers->bidprice) . ' | (' . $customers->statusnama . ')</p></div></div></span>';
 
 
             $group = '
             <div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->produknama . '</div>
-            <a style="color:blue; font-weight:normal;">' . $customers->produkwaktupengerjaan . '</a> | <a style="color:blue; font-weight:normal;">' . number_format($customers->produkbudget) . '</a>
+            <a style="color:green; font-weight:normal;">' . $customers->produkwaktupengerjaan . '</a> | <a style="color:green; font-weight:normal;">' . number_format($customers->produkbudget) . '</a>
             <i style="font-size:11px" class="la la-leaf"></i><a href="request/detail?id=' . $customers->produkid . '" style="font-size:11px" class="text-muted font-weight-normal text-hover-secondary">detail</a>
             <i style="font-size:11px" class="la la-leaf"></i><a href="bidding/progress?id=' . $customers->produkid . '" style="font-size:11px" class="text-muted font-weight-normal text-hover-secondary">progress</a>';
 
@@ -337,6 +337,38 @@ class Bid extends \Restserver\Libraries\REST_Controller
             $message = array(
                 'status' => $is_valid_token['status'],
                 'message' => $is_valid_token['message'],
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+    /**
+     * Get Bid by produk id
+     * --------------------
+     * --------------------------
+     * @method : GET
+     * @link: api/Bid/getByUserIdAndStatusId
+     */
+    public function getBidByProdukId_get($produkid)
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        // Load Authorization Token Library
+        $this->load->library('Authorization_Token');
+
+        /**
+         * User Token Validation
+         */
+        if (!empty($produkid)) {
+            $data = $this->Bid_Model->getBidByProdukId_Bid($produkid);
+            $message = array(
+                'status' => true,
+                'data' => $data
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        } else {
+            $message = array(
+                'status' => false,
+                'message' => 'gagal',
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }

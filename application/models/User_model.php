@@ -22,7 +22,7 @@ class User_Model extends CI_Model
     {
         if($aktivasi != ''){
             if($aktivasi == '0'){
-                $this->db->where('useraktivasiakunpremium' , $aktivasi);
+                $this->db->where('useraktivasiakunpremium' , '0');
                 $this->db->where('produkkategoriid !=' , null);
             }
         }
@@ -76,7 +76,7 @@ class User_Model extends CI_Model
     {
         if($aktivasi != ''){
             if($aktivasi == '0'){
-                $this->db->where('useraktivasiakunpremium' , $aktivasi);
+                $this->db->where('useraktivasiakunpremium' , '0');
                 $this->db->where('produkkategoriid !=' , null);
             }
         }
@@ -210,6 +210,19 @@ class User_Model extends CI_Model
     {
         // $this->db->where('userid',$userid);
         return $this->db->query("update user set useraktif = '0' where userid = '$id' ");
+    }
+    /**
+     * Aktif Preium user
+     * --------------------
+     * @param: $userid = ''
+     * --------------------------
+     * @method : POST
+     * @link: api/users/delete_user
+     */
+    public function aktifPremium_user($id)
+    {
+        // $this->db->where('userid',$userid);
+        return $this->db->query("update user set useraktivasiakunpremium = '1' where userid = '$id' ");
     }
     /**
      * Aktif user

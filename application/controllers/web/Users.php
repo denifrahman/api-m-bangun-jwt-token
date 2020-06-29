@@ -199,18 +199,27 @@ class Users extends \Restserver\Libraries\REST_Controller
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $customers) {
-            $btnDelete = '<a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-brand m-btn--icon m-btn--icon-only m-btn--pill" title="Edit" onclick="hapus(' . $customers->userid . ')"><i class="flaticon-delete"></i>';
-            $btnAktif = '<a href="#" class="m-portlet__nav-link btn m-btn m-btn--hover-brand m-btn--icon m-btn--icon-only m-btn--pill" title="Edit" onclick="aktif(' . $customers->userid . ')"><i class="la la-edit"></i></a>';
             $btnOption = '<span class="dropdown">
             <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="false">
               <i class="la la-ellipsis-h"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-32px, 27px, 0px);">
-                <a class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>
-                <a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>
-                <a class="dropdown-item" href="#"><i class="la la-print"></i> Generate Report</a>
+                <a class="dropdown-item" onclick="aktif(' . $customers->userid . ')" href="#"><i class="la la-edit" ></i> Aktif</a>
+                <a class="dropdown-item" onclick="premium(' . $customers->userid . ')" href="#"><i class="la la-leaf" ></i> Update Premium</a>
+                <a class="dropdown-item" onclick="hapus(' . $customers->userid . ')" href="#"><i class="la la-print"></i> Delete</a>
             </div>
         </span>';
+
+            $foto = '
+        <center>
+        <span class="m-topbar__userpic">
+                <img src="' . $customers->userfoto . '" class="m--img-rounded m--marginless" style=width:50px;height:50px;>
+        </span>
+        </center>';
+
+            $list_tile = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->usernamalengkap . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . date('d-m-Y', strtotime($customers->usercreate)) . '</a></div></div></span>';
+
+            $btnUpdate = '';
             $jenisAkun = '';
             if ($customers->produkkategorinama == null && $customers->useraktivasiakunpremium == '0') {
                 $jenisAkun = '<span style="color: blue; font-weight: 500;">Standart</span>';
@@ -220,15 +229,16 @@ class Users extends \Restserver\Libraries\REST_Controller
                 $jenisAkun = '<span style="color: orange; font-weight: 500;">' . $customers->produkkategorisubnama . '</span>';
             }
 
+
             $no++;
             $row = array();
             $row[] = $no;
-            $row[] = $customers->usernamalengkap;
+            $row[] = $list_tile;
             $row[] = $customers->useralamat;
             $row[] = $customers->usercreate;
             $row[] = $jenisAkun;
             $row[] = $customers->useraktivasiakunpremium == '0' ? '' : '<center><img src="http://localhost:8888/api_jwt/assets/icon/verified.png" class="m--img-rounded m--marginless" style="width:15px; height:15px;"></center>';
-            $row[] = $status == '0' ? $btnAktif.$btnOption : $btnDelete . $btnOption;
+            $row[] = $btnOption;
             $data[] = $row;
         }
         $output = array(
@@ -236,7 +246,7 @@ class Users extends \Restserver\Libraries\REST_Controller
             "recordsTotal" => $this->UserModel->count_all($status, $aktivasi),
             "recordsFiltered" => $this->UserModel->count_filtered($status, $aktivasi),
             "data" => $data,
-            "aktivasi" => $aktivasi
+            "aktivasi" => $this->db->last_query()
         );
         $this->response($output);
     }
@@ -252,6 +262,36 @@ class Users extends \Restserver\Libraries\REST_Controller
         } else {
             // Delete an Article
             $output = $this->UserModel->delete_user($id);
+
+            if ($output > 0 and !empty($output)) {
+                // Success
+                $message = [
+                    'status' => true,
+                    'message' => "User Deleted"
+                ];
+                $this->response($message);
+            } else {
+                // Error
+                $message = [
+                    'status' => FALSE,
+                    'message' => "User not delete"
+                ];
+                $this->response($message);
+            }
+        }
+    }
+    /**
+     * Aktif Premium akun
+     * @method: DELETE
+     */
+    public function aktifPremiumUser_get($id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        if (empty($id)) {
+            $this->response(['status' => $id, 'message' => 'Invalid Article ID']);
+        } else {
+            // Delete an Article
+            $output = $this->UserModel->aktifPremium_user($id);
 
             if ($output > 0 and !empty($output)) {
                 // Success
