@@ -203,6 +203,62 @@ class Users extends \Restserver\Libraries\REST_Controller
         }
     }
 
+     /**
+     * User Login API
+     * --------------------
+     * @param: username or email
+     * @param: password
+     * --------------------------
+     * @method : POST
+     * @link: api/users/loginAdmin
+     */
+    public function loginAdmin_post()
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        # XSS Filtering (https://www.codeigniter.com/user_guide/libraries/security.html)
+        $_POST = $this->security->xss_clean($_POST);
+
+        # Form Validation
+     
+            // Load Login Function
+            
+            $output = $this->UserModel->login_user($this->post('data_post')['useremail'], $this->post('data_post')['userpassword']);
+            if (!empty($output) and $output != FALSE) {
+                // Load Authorization Token Library
+                $this->load->library('Authorization_Token');
+
+                // Generate Token
+                $token_data['id'] = $output->userid;
+                $token_data['usernama'] = $output->usernama;
+                $token_data['useralamat'] = $output->useralamat;
+                $token_data['time'] = time();
+
+                $user_token = $this->authorization_token->generateToken($token_data);
+
+                $return_data = array(
+                    'data_user' => $output,
+                    'token' => $user_token,
+                );
+
+                // Login Success
+                $message = array(
+                    'status' => true,
+                    'data' => $output,
+                    'message' => "User login successful"
+                );
+                $this->response($message, REST_Controller::HTTP_OK);
+            } else {
+                // Login Error
+                $message = array(
+                    'status' => FALSE,
+                    'message' => "Invalid Username or Password"
+                );
+                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+            }
+        
+    }
+
     public function createUser_get()
     {
         include_once APPPATH . "vendor/autoload.php";

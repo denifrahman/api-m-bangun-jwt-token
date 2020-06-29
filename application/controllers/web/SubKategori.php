@@ -3,36 +3,27 @@
 use Restserver\Libraries\REST_Controller;
 
 require APPPATH . '/libraries/REST_Controller.php';
-
-class Produk extends \Restserver\Libraries\REST_Controller
+ 
+class SubKategori extends \Restserver\Libraries\REST_Controller
 {
     public function __construct() {
         parent::__construct();
-        // Load Produk Model
-        $this->load->model('Produk_model', 'Produk_Model');
-        $this->load->library('crypt');
+        // Load SubKategori Model
+        $this->load->model('SubKategori_model', 'SubKategori_Model');
+        $this->load->library('crypt'); 
     }
 
     /**
-     * Produk Get Data
+     * SubKategori Get Data
      * --------------------
      * --------------------------
      * @method : GET
-     * @link: api/Produk/getAll
+     * @link: api/SubKategori/getAll
      */
-    public function getAllByParam_get()
+    public function getAll_get()
     {
-        $idKecamatan = $this->get('kec');
-        $idKota = $this->get('kota');
-        $idProvinsi = $this->get('prov');
-        $idSubKategori = $this->get('sub');
-        $key = $this->get('key');
-        $userId = $this->get('userid');
-        $stproduk = $this->get('stp');
-        $produkId = $this->get('pro_id');
-
         header("Access-Control-Allow-Origin: *");
-
+    
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
 
@@ -41,8 +32,7 @@ class Produk extends \Restserver\Libraries\REST_Controller
          */
         $is_valid_token = $this->authorization_token->validateToken();
         if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Produk_Model->getAllByParam_Produk($idKecamatan,$idKota,$idProvinsi, $idSubKategori,$key,$userId,$stproduk,$produkId);
-            $qry = $this->db->last_query();
+            $data = $this->SubKategori_Model->getAll_SubKategori();
             $message = array(
                 'status' => $is_valid_token['status'],
                 'data' => $data
@@ -56,37 +46,37 @@ class Produk extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
-      /**
-     * Produk Get Data
+    /**
+     * SubKategori Get Data
      * --------------------
      * --------------------------
      * @method : GET
-     * @link: api/Produk/getAllById
+     * @link: api/SubKategori/getAll
      */
-    public function getById_get($id)
+    public function getAllByIdKategori_get($id)
     {
         header("Access-Control-Allow-Origin: *");
-
+    
         // Load Authorization Token Library
-        $this->load->library('Authorization_Token');
+        // $this->load->library('Authorization_Token');
 
         /**
          * User Token Validation
          */
-        $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Produk_Model->getById_Produk($id);
+        // $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($id)){
+            $data = $this->SubKategori_Model->getAllByIdKategori_SubKategori($id);
             $message = array(
-                'status' => $is_valid_token['status'],
+                'status' => true,
                 'data' => $data
             );
-            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+            $this->response($message);
         }else{
             $message = array(
-                'status' => $is_valid_token['status'],
-                'message' => $is_valid_token['message'],
+                'status' => false,
+                'message' => 'gagal',
             );
-            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+            $this->response($message);
         }
     }
 }

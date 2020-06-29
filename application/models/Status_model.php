@@ -19,11 +19,20 @@ class Status_Model extends CI_Model
      * @param: Statusname or email address
      * @param: password
      */
-    public function getAll_Status()
+    public function getAll_Status($number,$offset)
     {
         $this->db->where('statusaktif','1');
-        $q = $this->db->get($this->Status_table);
+        $q = $this->db->get($this->Status_table,$number,$offset);
         return $q->result();
+    }
+     /**
+     * Count Status
+     * ----------------------------------
+     */
+    public function getCount_Status()
+    {
+        $q =  $this->db->query("select count(statusid) as count from m_status where statusaktif = 1");
+        return $q->row();
     }
       /**
      * Status Get Data Filter Param
