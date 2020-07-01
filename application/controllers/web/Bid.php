@@ -34,8 +34,8 @@ class Bid extends \Restserver\Libraries\REST_Controller
             $group = '
             <div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->produknama . '</div>
             <a style="color:green; font-weight:normal;">' . $customers->produkwaktupengerjaan . '</a> | <a style="color:green; font-weight:normal;">' . number_format($customers->produkbudget) . '</a>
-            <i style="font-size:11px" class="la la-leaf"></i><a href="request/detail?id=' . $customers->produkid . '" style="font-size:11px" class="text-muted font-weight-normal text-hover-secondary">detail</a>
-            <i style="font-size:11px" class="la la-leaf"></i><a href="bidding/progress?id=' . $customers->produkid . '" style="font-size:11px" class="text-muted font-weight-normal text-hover-secondary">progress</a>';
+            <a href="request/detail?id=' . $customers->produkid . '" style="font-size:12px" class="text-muted font-weight-normal text-hover-secondary">view produk</a>
+            <a href="invoice/produk?id=' . $customers->produkid . '" style="font-size:12px" class="text-muted font-weight-normal text-hover-secondary">invoice</a>';
 
             $no++;
             $row = array();

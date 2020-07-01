@@ -185,7 +185,7 @@ class Bid_Model extends CI_Model
             $this->db->where('userid', $userid);
         }
         if ($statusid != '') {
-            $this->db->where('statusid', $statusid);
+            $this->db->where('bidstatusid', $statusid);
         }
         $q = $this->db->get('v_bid');
         return $q->result();
