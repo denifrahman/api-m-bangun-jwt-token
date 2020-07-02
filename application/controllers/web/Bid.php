@@ -24,18 +24,25 @@ class Bid extends \Restserver\Libraries\REST_Controller
             $foto = '
                 <center>
                 <span class="m-topbar__userpic">
-                        <img src="' . $customers->userfoto . '" class="m--img-rounded m--marginless" style=width:50px;height:50px;>
+                        <img src="' . $customers->userfoto . '" class="m--img-rounded m--marginless" style=width:40px;height:40px;>
                 </span>
                 </center>';
 
-            $list_tile = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->userbidnama . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . date('d-m-Y', strtotime($customers->bidcreate)) . '</a><p style="color:green;">' . number_format($customers->bidprice) . ' | (' . $customers->statusnama . ')</p></div></div></span>';
+            $list_tile = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->userbidnama . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . date('d-m-Y', strtotime($customers->bidcreate)) . '</a>
+            <div class="row" style="margin-left:1px">
+                <p style="color:green;">' . number_format($customers->bidprice) . '</p>
+                
+                <p style="color:black; margin-left:5px;">(' . $customers->statusnama . ')</p>
+                </div>
+            </div></div></span>';
 
 
             $group = '
             <div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->produknama . '</div>
             <a style="color:green; font-weight:normal;">' . $customers->produkwaktupengerjaan . '</a> | <a style="color:green; font-weight:normal;">' . number_format($customers->produkbudget) . '</a>
             <a href="request/detail?id=' . $customers->produkid . '" style="font-size:12px" class="text-muted font-weight-normal text-hover-secondary">view produk</a>
-            <a href="invoice/produk?id=' . $customers->produkid . '" style="font-size:12px" class="text-muted font-weight-normal text-hover-secondary">invoice</a>';
+             | <a href="invoice/produk?id=' . $customers->produkid . '" style="font-size:12px" class="text-muted font-weight-normal text-hover-secondary">invoice</a>
+             | <a href="kontrak/create?id=' . $customers->produkid . '" style="font-size:12px" class="text-muted font-weight-normal text-hover-secondary">kontrak</a>';
 
             $no++;
             $row = array();
@@ -43,7 +50,7 @@ class Bid extends \Restserver\Libraries\REST_Controller
             $row[] = $group;
             $row[] = $list_tile;
             $row[] = $customers->biddeskripsi;
-            $row[] = $customers->bidwaktupengerjaan;
+            $row[] = $customers->bidwaktupengerjaan . ' Hari';
             $row[] = $btnOption;
             $data[] = $row;
         }

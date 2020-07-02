@@ -5,7 +5,7 @@ class Produk_Model extends CI_Model
     protected $produk_table = 'v_produk';
     public $column_order = array('produknama', 'usernamalengkap', 'produkalamat', 'produkwaktupengerjaan', 'produkthumbnail','produkfoto1'); //set column field database for datatable orderable
     public $column_search = array('produknama', 'usernamalengkap', 'produkalamat', 'produkwaktupengerjaan', 'produkthumbnail','produkfoto1'); //set column field database for datatable searchable
-    public $order = array('produkcreate' => 'asc'); // defau
+    public $order = array('produkcreate' => 'desc'); // defau
 
 
     /**
@@ -180,7 +180,7 @@ class Produk_Model extends CI_Model
      */
     public function updateStatus_Produk($data)
     {
-        $this->db->where('produkid', $data->produkid);
+        $this->db->where('produkid', $data['produkid']);
         $q =  $this->db->update('produk', $data);
         return $q;
     }

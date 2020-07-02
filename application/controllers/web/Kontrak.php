@@ -99,4 +99,15 @@ class Kontrak extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
+    public function pdf_get()
+    {
+        $produkid = $this->get('id', TRUE);
+        $this->load->library('pdf');
+        $data['kontrak'] = $this->Kontrak_Model->getKontrakByProdukId_Kontrak($produkid);
+            // var_dump($data['kontrak']);
+            // die;
+        $this->pdf->setPaper('A4', 'potrait');
+        $this->pdf->filename = "laporan-petanikode.pdf";
+        $this->pdf->load_view('pdf', $data);
+    }
 }

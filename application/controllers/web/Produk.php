@@ -42,12 +42,12 @@ class Produk extends \Restserver\Libraries\REST_Controller
                         <img src="' . $customers->produkthumbnail . '" class="m--img-rounded m--marginless" style=width:50px;height:50px;>
                 </span>
                 </center>';
-            $leading = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->usernamalengkap . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . $customers->produknama .'</a><p style="color:blue;">'.$customers->produkkategorinama. ',  '.$customers->produkkategorisubnama.'</p></div></div></span>';
-           
+            $leading = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->usernamalengkap . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . $customers->produknama . '</a><p style="color:blue;">' . $customers->produkkategorinama . ',  ' . $customers->produkkategorisubnama . '</p></div></div></span>';
+
             $isaktif = '';
-            if($customers->produkaktif == 0){
+            if ($customers->produkaktif == 0) {
                 $isaktif = '<p style="color:grey">Non Aktif</p>';
-            }else{
+            } else {
                 $isaktif = '<p style="color:blue">Aktif</p>';
             }
 
@@ -201,12 +201,67 @@ class Produk extends \Restserver\Libraries\REST_Controller
      */
     public function updateStatus_post()
     {
-        $data  = file_get_contents('php://input');
-        $output = $this->Produk_Model->updateStatus_Produk(json_decode($data));
-        $message = array(
-            'status' => $output
-        );
+        $fileName                       =  $_POST['produkfile'];
+        $config['upload_path']          = 'assets/pdf';
+        $config['allowed_types']        = 'gif|jpg|png|jpeg|pdf';
+        $config['max_size']             = 10000;
+        $config['max_width']            = 1024;
+        $config['max_height']           = 768;
+        $config['file_name']            =  $fileName;
+
+        $this->load->library('upload', $config);
+
+        $data_input = $_POST;
+        $output = $this->Produk_Model->updateStatus_Produk($data_input);
+
+        if ($output) {
+            if (!$this->upload->do_upload('nama_file')) {
+                $error = array('error' => $this->upload->display_errors());
+                $message = array(
+                    'status' => true,
+                    'status_update'=>$output,
+                    'message' => $error
+                );
+                $this->response($error);
+            } else {
+                $res = array('upload_data' => $this->upload->data());
+                $message = array(
+                    'status' => true,
+                    'message' => $res
+                );
+            }
+        }
         $this->response($message);
+    }
+    public function deleteFileByNama_get($nama_file, $id)
+    {
+        $file = "assets/pdf/" . $nama_file;
+        $data_input = array(
+            'produkid' => $id,
+            'produkfile' => Null
+        );
+        $output = $this->Produk_Model->updateStatus_Produk($data_input);
+        if ($output) {
+            if (is_readable($file) && unlink($file)) {
+                $message = array(
+                    'status' => true,
+                    'message' => 'file berhasil di hapus'
+                );
+                $this->response($message);
+            } else {
+                $message = array(
+                    'status' => true,
+                    'message' => 'file tidak berhasil di hapus'
+                );
+                $this->response($message);
+            }
+        } else {
+            $message = array(
+                'status' => $output,
+                'message' => 'file tidak berhasil di hapus'
+            );
+            $this->response($message);
+        }
     }
     /**
      * Produk Get Data

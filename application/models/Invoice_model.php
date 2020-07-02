@@ -120,6 +120,7 @@ class Invoice_Model extends CI_Model
     public function getInvoiceByProdukId_Invoice($produkid)
     {
         $this->db->where('produkid', $produkid);
+        $this->db->order_by('invoiceid','desc');
         $q = $this->db->get('t_invoice');
         return $q->result();
     }

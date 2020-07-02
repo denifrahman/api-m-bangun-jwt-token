@@ -7,9 +7,9 @@ class Kontrak_Model extends CI_Model
     //  * Use Registration
     //  * @param: {array} Kontrak Data
     //  */
-    public function createIncoive_Kontrak($data)
+    public function createIncoive_Kontrak($produkid,$kontrakbody,$userid_owner,$userid_worker)
     {
-        $q = $this->db->insert($this->Kontrak_table, $data);
+        $q = $this->db->query("insert into t_kontrak (produkid,kontrakbody,userid_owner,userid_worker) values ('$produkid','$kontrakbody','$userid_owner','$userid_worker')");
         return $q;
     }
 
