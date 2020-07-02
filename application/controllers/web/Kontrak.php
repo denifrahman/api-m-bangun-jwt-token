@@ -102,7 +102,7 @@ class Kontrak extends \Restserver\Libraries\REST_Controller
     public function pdf_get()
     {
         $produkid = $this->get('id', TRUE);
-        $this->load->library('pdf');
+        $this->load->library('Pdf');
         $data['kontrak'] = $this->Kontrak_Model->getKontrakByProdukId_Kontrak($produkid);
             // var_dump($data['kontrak']);
             // die;
