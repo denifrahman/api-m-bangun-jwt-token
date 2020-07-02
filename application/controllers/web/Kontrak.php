@@ -108,6 +108,6 @@ class Kontrak extends \Restserver\Libraries\REST_Controller
             // die;
         $this->pdf->setPaper('A4', 'potrait');
         $this->pdf->filename = "laporan-petanikode.pdf";
-        $this->pdf->load_view('pdf', $data);
+        $this->pdf->load_view('v_pdf', $data);
     }
 }
