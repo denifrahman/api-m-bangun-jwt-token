@@ -217,7 +217,7 @@ class Bid extends \Restserver\Libraries\REST_Controller
      * @method : GET
      * @link: api/Bid/chekUserBidding
      */
-    public function chekUserBidding_get()
+    public function getBidByParam_get()
     {
         header("Access-Control-Allow-Origin: *");
 
@@ -231,11 +231,22 @@ class Bid extends \Restserver\Libraries\REST_Controller
         if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
             $produkid = $this->get('produkId');
             $userid = $this->get('userId');
-            $data = $this->Bid_Model->chekUserBidding_Bid($produkid, $userid);
-            $message = array(
-                'status' => $is_valid_token['status'],
-                'data' => $data
-            );
+            $bidid = $this->get('budId');
+            $bidstatusid = $this->get('bidStatusId');
+            $data = $this->Bid_Model->getBidByParam_Bid($produkid, $userid, $bidid,$bidstatusid);
+            if (count($data) <= 0) {
+                $message = array(
+                    'status' => $is_valid_token['status'],
+                    'data' => $data,
+                    'isBid'=>false
+                );
+            }else{
+                $message = array(
+                    'status' => $is_valid_token['status'],
+                    'data' => $data,
+                    'isBid'=>true
+                );
+            }
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
             $message = array(
@@ -245,6 +256,8 @@ class Bid extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
+
+   
     /**
      * Get Bid by user id
      * --------------------

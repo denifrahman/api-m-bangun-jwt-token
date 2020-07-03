@@ -42,7 +42,7 @@ class Produk extends \Restserver\Libraries\REST_Controller
                         <img src="' . $customers->produkthumbnail . '" class="m--img-rounded m--marginless" style=width:50px;height:50px;>
                 </span>
                 </center>';
-            $leading = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->usernamalengkap . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . $customers->produknama . '</a><p style="color:blue;">' . $customers->produkkategorinama . ',  ' . $customers->produkkategorisubnama . '</p></div></div></span>';
+            $leading = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->produknama . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . $customers->usernamalengkap . '</a><p style="color:blue;">' . $customers->produkkategorinama . ',  ' . $customers->produkkategorisubnama . '</p></div></div></span>';
 
             $isaktif = '';
             if ($customers->produkaktif == 0) {

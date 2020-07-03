@@ -18,10 +18,10 @@ class Bid_Model extends CI_Model
     private function _get_datatables_query($status = '')
     {
         if ($status != '') {
-            if($status == 'New' || $status == 'Kontrak' ||$status == 'Progress' ||$status == 'Negosiasi' ){
+            if ($status == 'New' || $status == 'Kontrak' || $status == 'Progress' || $status == 'Negosiasi') {
                 $this->db->where('statusnama !=', 'Batal');
                 $this->db->where('statusnama !=', 'Ditolak');
-            }else if($status == 'Ditolak' || $status == 'Batal'){
+            } else if ($status == 'Ditolak' || $status == 'Batal') {
                 $this->db->where('statusnama', $status);
             }
         }
@@ -72,10 +72,10 @@ class Bid_Model extends CI_Model
     public function count_all($status)
     {
         if ($status != '') {
-            if($status == 'New' || $status == 'Kontrak' ||$status == 'Progress' ||$status == 'Negosiasi' ){
+            if ($status == 'New' || $status == 'Kontrak' || $status == 'Progress' || $status == 'Negosiasi') {
                 $this->db->where('statusnama !=', 'Batal');
                 $this->db->where('statusnama !=', 'Ditolak');
-            }else if($status == 'Ditolak' || $status == 'Batal'){
+            } else if ($status == 'Ditolak' || $status == 'Batal') {
                 $this->db->where('statusnama', 'Batal');
                 $this->db->where('statusnama', 'Ditolak');
             }
@@ -150,16 +150,22 @@ class Bid_Model extends CI_Model
      * ----------------------------------
      * @param: SubBid get by id
      */
-    public function chekUserBidding_Bid($produkid, $userid)
+    public function getBidByParam_Bid($produkid = '', $userid = '', $bidid = '', $bidstatusid = '')
     {
-        $this->db->where('userid', $userid);
-        $this->db->where('produkid', $produkid);
-        $q = $this->db->get($this->Bid_table);
-        if (count($q->result()) <= 0) {
-            return false;
-        } else {
-            return true;
+        if ($produkid != '') {
+            $this->db->where('produkid', $produkid);
         }
+        if ($userid != '') {
+            $this->db->where('userid', $userid);
+        }
+        if ($bidid != '') {
+            $this->db->where('bidid', $bidid);
+        }
+        if ($bidstatusid != '') {
+            $this->db->where('bidstatusid', $bidstatusid);
+        }
+        $q = $this->db->get('v_bid');
+        return $q->result();
     }
     /**
      * getCount Bid By user
@@ -205,7 +211,7 @@ class Bid_Model extends CI_Model
         return $q->row();
     }
 
-     /**
+    /**
      * update Bid
      * @param array($data);
      * ----------------------------------
