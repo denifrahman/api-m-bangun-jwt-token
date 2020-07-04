@@ -19,38 +19,47 @@ class Kontrak_Model extends CI_Model
      * @param: Kontrakname or email address
      * @param: password
      */
-    public function getAllByParam_Kontrak($idKecamatan = '', $idKota = '', $idProvinsi = '', $idSubKategori = '', $key = '', $userId = '', $stKontrak = '', $KontrakId = '')
+    public function getKontrakByParam_Kontrak($produkid='',$kontrakid='',$userid_worker='',$userid_owner='')
     {
-        if ($idKecamatan != '') {
-            $this->db->where('id_kecamatan', $idKecamatan);
+        if ($produkid != '') {
+            $this->db->where('produkid', $produkid);
         }
-        if ($userId != '') {
-            $this->db->where('userid', $userId);
+        if ($kontrakid != '') {
+            $this->db->where('kontrakid', $kontrakid);
         }
-        if ($KontrakId != '') {
-            $this->db->where('Kontrakid', $KontrakId);
+        if ($userid_worker != '') {
+            $this->db->where('userid_worker', $userid_worker);
         }
-        if ($stKontrak != '') {
-            $this->db->where('statusnama', $stKontrak);
+        if ($userid_owner != '') {
+            $this->db->where('userid_owner', $userid_owner);
         }
-        if ($idKota != '') {
-            $this->db->where('id_kota', $idKota);
-        }
-        if ($idProvinsi != '') {
-            $this->db->where('id_provinsi', $idProvinsi);
-        }
-        if ($key != '') {
-            $this->db->like('Kontraknama', $key);
-            $this->db->where('Kontrakstatusid', '3');
-        }
-        if ($idSubKategori != '') {
-            $this->db->where('KontrakkategorisuKontrak', $idSubKategori);
-            $this->db->where('Kontrakstatusid', '3');
-            $this->db->where('Kontrakaktif', '1');
-        }
-        $this->db->order_by("Kontrakid", "desc");
+        $this->db->order_by("kontrakid", "desc");
+        $q = $this->db->get('v_kontrak');
+        return $q->row();
+    }
 
-        $q = $this->db->get($this->Kontrak_table);
+      /**
+     * getALlKontrakByParam
+     * ----------------------------------
+     * @param: Kontrakname or email address
+     * @param: $produkid='',$kontrakid='',$userid_worker='',$userid_owner=''
+     */
+    public function getAllKontrakByParam_Kontrak($produkid='',$kontrakid='',$userid_worker='',$userid_owner='')
+    {
+        if ($produkid != '') {
+            $this->db->where('produkid', $produkid);
+        }
+        if ($kontrakid != '') {
+            $this->db->where('kontrakid', $kontrakid);
+        }
+        if ($userid_worker != '') {
+            $this->db->where('userid_worker', $userid_worker);
+        }
+        if ($userid_owner != '') {
+            $this->db->where('userid_owner', $userid_owner);
+        }
+        $this->db->order_by("kontrakid", "desc");
+        $q = $this->db->get('v_kontrak');
         return $q->result();
     }
     /**

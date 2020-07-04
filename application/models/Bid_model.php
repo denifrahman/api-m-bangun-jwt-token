@@ -5,7 +5,7 @@ class Bid_Model extends CI_Model
     protected $Bid_table = 't_bids';
     public $column_order = array('statusnama', 'produknama', 'produkbudget', 'bidprice', 'bidcreate'); //set column field database for datatable orderable
     public $column_search = array('statusnama', 'produknama', 'produkbudget', 'bidprice', 'bidcreate'); //set column field database for datatable searchable
-    public $order = array('bidcreate' => 'asc'); // defau
+    public $order = array('bidcreate' => 'desc'); // defau
 
     /*
     Fungsi : mengambil data sesuai parameter

@@ -68,24 +68,29 @@ class Kontrak extends \Restserver\Libraries\REST_Controller
 
 
     /**
-     * Get Kontrak by produk id
-     * --------------------
+     * Get Kontrak param
+     * response data objek
      * --------------------------
      * @method : GET
-     * @link: api/Kontrak/getByUserIdAndStatusId
+     * @link: api/Kontrak/getKontrakByParam?
      */
-    public function getKontrakByProdukId_get($produkid)
+
+    public function getKontrakByParam_get()
     {
         header("Access-Control-Allow-Origin: *");
 
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
-
         /**
          * User Token Validation
          */
-        if (!empty($produkid)) {
-            $data = $this->Kontrak_Model->getKontrakByProdukId_Kontrak($produkid);
+        $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
+            $produkid = $this->get('produkId');
+            $kontrakid = $this->get('kontrakId');
+            $userid_worker = $this->get('userIdWorker');
+            $userid_owner = $this->get('userIdOwner');
+            $data = $this->Kontrak_Model->getKontrakByParam_Kontrak($produkid,$kontrakid,$userid_worker,$userid_owner);
             $message = array(
                 'status' => true,
                 'data' => $data
@@ -93,44 +98,66 @@ class Kontrak extends \Restserver\Libraries\REST_Controller
             $this->response($message);
         } else {
             $message = array(
-                'status' => false,
-                'message' => 'gagal',
+                'status' => $is_valid_token['status'],
+                'message' => $is_valid_token['message'],
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
+    /**
+     * Get Kontrak param
+     * response data array
+     * --------------------------
+     * @method : GET
+     * @link: api/Kontrak/getAllKontrakByParam?
+     */
+
+    public function getAllKontrakByParam_get()
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        // Load Authorization Token Library
+        $this->load->library('Authorization_Token');
+        /**
+         * User Token Validation
+         */
+        $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
+            $produkid = $this->get('produkId');
+            $kontrakid = $this->get('kontrakId');
+            $userid_worker = $this->get('userIdWorker');
+            $userid_owner = $this->get('userIdOwner');
+            $data = $this->Kontrak_Model->getKontrakByParam_Kontrak($produkid,$kontrakid,$userid_worker,$userid_owner);
+            $message = array(
+                'status' => true,
+                'data' => $data
+            );
+            $this->response($message);
+        } else {
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'message' => $is_valid_token['message'],
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Get Kontrak pdf by id
+     * --------------------
+     * --------------------------
+     * @method : GET
+     * @link: api/Kontrak/pdf?id=''
+     */
     public function pdf_get()
     {
         $produkid = $this->get('id', TRUE);
         $this->load->library('pdf');
         $data['kontrak'] = $this->Kontrak_Model->getKontrakByProdukId_Kontrak($produkid);
-        $data['default_img'] = $this->encode_img_base64('http://administrator.m-bangun.com/assets/images/logo/lpp-logo.jpeg');
-
-
-        if($data['kontrak']->worker_signature == null){
-            $data['kontrak']->worker_signature = $this->encode_img_base64('http://administrator.m-bangun.com/assets/images/logo/lpp-logo.jpeg');
-        }else{
-            $data['kontrak']->worker_signature = $this->encode_img_base64($data['kontrak']->worker_signature);    
-        }
-        
-        if($data['kontrak']->owner_signature == null){
-            $data['kontrak']->owner_signature = $this->encode_img_base64('http://administrator.m-bangun.com/assets/images/logo/lpp-logo.jpeg');
-        }else{
-            $data['kontrak']->owner_signature = $this->encode_img_base64($data['kontrak']->owner_signature);    
-        }
-
-        // var_dump($data['kontrak']->owner_signature);
+        // var_dump($data['kontrak']);
         // die;
         $this->pdf->setPaper('A4', 'potrait');
-        $this->pdf->filename = "kontrak.pdf";
+        $this->pdf->filename = "laporan-petanikode.pdf";
         $this->pdf->load_view('Pdf', $data);
-    }
-    function encode_img_base64($img_path = false)
-    {
-        if ($img_path) {
-            return base64_encode(file_get_contents($img_path));
-        }
-
-        return false;
     }
 }

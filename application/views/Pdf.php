@@ -7,16 +7,22 @@
     </tr>
     <tr>
         <?php if ($kontrak->worker_signature == null) { ?>
-            <td style="text-align: center; "><img src="' . base_url() . 'assets/images/logo/logo.png" alt="images" width="100px" style="opacity: 0.1;"></td>
+            <td style="text-align: center; "><img src="data:image/gif;base64,<?=$default_img?>" alt="images" width="100px" style="opacity: 0.3;"></td>
         <?php } else { ?>
-            <?= $kontrak->worker_signature ?>
+            <td style="text-align: center; "><img src="data:image/gif;base64,<?=$kontrak->worker_signature?>" alt="images" width="100px" style="opacity: 1;"></td>
         <?php } ?>
+        
         <?php if ($kontrak->owner_signature == null) { ?>
-            <td style="text-align: center; "><img src="' . base_url() . 'assets/images/logo/logo.png" alt="images" width="100px" style="opacity: 0.1;"></td>
+            <td style="text-align: center; "><img src="http://m-bangun.com/api/assets/20_siup.jpeg" alt="images" width="100px" style="opacity: 0.3;"></td>
         <?php } else { ?>
-            <?= $kontrak->owner_signature ?>
+            <td style="text-align: center; "><img src="data:image/gif;base64,<?=$kontrak->owner_signature?>" alt="images" width="100px" style="opacity: 1;"></td>
         <?php } ?>
-        <td style="text-align: center; "><img src="' . base_url() . 'assets/images/logo/logo.png" alt="images" width="100px" style="opacity: 0.1;"></td>
+
+        <?php if ($kontrak->owner_signature == null) { ?>
+            <td style="text-align: center; "><img src="http://m-bangun.com/api/assets/20_siup.jpeg" alt="images" width="100px" style="opacity: 0.3;"></td>
+        <?php } else { ?>
+            <td style="text-align: center; "><img src="data:image/gif;base64,<?=$kontrak->owner_signature?>" alt="images" width="100px" style="opacity: 1;"></td>
+        <?php } ?>
     </tr>
     <tr>
         <td style="text-align: center; ">m-Bangun</td>

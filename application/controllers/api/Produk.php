@@ -45,7 +45,8 @@ class Produk extends \Restserver\Libraries\REST_Controller
             $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
-                'data' => $data
+                'data' => $data,
+                'last'=>$qry
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }else{
