@@ -110,7 +110,7 @@ class Kontrak extends \Restserver\Libraries\REST_Controller
         if($data['kontrak']->worker_signature == null){
             $data['kontrak']->worker_signature = $this->encode_img_base64('http://administrator.m-bangun.com/assets/images/logo/lpp-logo.jpeg');
         }else{
-            $data['kontrak']->worker_signature = $this->encode_img_base64($data['kontrak']->worker_signature);    
+            $data['kontrak']->worker_signature = $this->encode_img_base64( base_url().'/assets/'. $data['kontrak']->worker_signature);    
         }
         
         if($data['kontrak']->owner_signature == null){

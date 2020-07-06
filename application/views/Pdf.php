@@ -9,7 +9,7 @@
         <?php if ($kontrak->worker_signature == null) { ?>
             <td style="text-align: center; "><img src="data:image/gif;base64,<?=$default_img?>" alt="images" width="100px" style="opacity: 0.3;"></td>
         <?php } else { ?>
-            <td style="text-align: center; "><img src="data:image/gif;base64,<?=$kontrak->worker_signature?>" alt="images" width="100px" style="opacity: 1;"></td>
+            <td style="text-align: center; "><img src="data:image/gif;base64,<?=$default_img?>" alt="images" width="100px" style="opacity: 0.3;"></td>
         <?php } ?>
         
         <?php if ($kontrak->owner_signature == null) { ?>
