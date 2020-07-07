@@ -19,38 +19,33 @@ class Invoice_Model extends CI_Model
      * @param: Invoicename or email address
      * @param: password
      */
-    public function getAllByParam_Invoice($idKecamatan = '', $idKota = '', $idProvinsi = '', $idSubKategori = '', $key = '', $userId = '', $stInvoice = '', $InvoiceId = '')
+    public function getAllByParam_Invoice($invoiceid='',$produkid='',$invoice_status='',$invoice_tgl_bayar='',$invoice_nominal='',$invoice_termin ='',$userid='')
     {
-        if ($idKecamatan != '') {
-            $this->db->where('id_kecamatan', $idKecamatan);
+        if ($invoiceid != '') {
+            $this->db->where('invoiceid', $invoiceid);
         }
-        if ($userId != '') {
-            $this->db->where('userid', $userId);
+        if ($produkid != '') {
+            $this->db->where('produkid', $produkid);
         }
-        if ($InvoiceId != '') {
-            $this->db->where('Invoiceid', $InvoiceId);
+        if ($invoice_status != '') {
+            $this->db->where('invoice_status', $invoice_status);
         }
-        if ($stInvoice != '') {
-            $this->db->where('statusnama', $stInvoice);
+        if ($invoice_tgl_bayar != '') {
+            $this->db->where('invoice_tgl_bayar', $invoice_tgl_bayar);
         }
-        if ($idKota != '') {
-            $this->db->where('id_kota', $idKota);
+        if ($invoice_nominal != '') {
+            $this->db->where('invoice_nominal', $invoice_nominal);
         }
-        if ($idProvinsi != '') {
-            $this->db->where('id_provinsi', $idProvinsi);
+        if ($invoice_termin != '') {
+            $this->db->where('invoice_termin', $invoice_termin);
         }
-        if ($key != '') {
-            $this->db->like('Invoicenama', $key);
-            $this->db->where('Invoicestatusid', '3');
+        if ($userid != '') {
+            $this->db->where('userid', $userid);
         }
-        if ($idSubKategori != '') {
-            $this->db->where('InvoicekategorisuInvoice', $idSubKategori);
-            $this->db->where('Invoicestatusid', '3');
-            $this->db->where('Invoiceaktif', '1');
-        }
-        $this->db->order_by("Invoiceid", "desc");
-
-        $q = $this->db->get($this->Invoice_table);
+        
+        // $this->db->order_by("invoicreate", "desc");
+        // $this->db->where("invoice", "1");
+        $q = $this->db->get('v_invoice');
         return $q->result();
     }
     /**

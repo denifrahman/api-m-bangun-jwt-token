@@ -206,7 +206,7 @@ class Bid_Model extends CI_Model
     public function getBidByProdukId_Bid($produkid)
     {
         $this->db->where('produkid', $produkid);
-        $this->db->where('statusnama', 'Kontrak');
+        // $this->db->where('statusnama', 'Kontrak')->or_where('statusnama','Progress');
         // $this->db->where('statusnama', 'Progress');
         // $this->db->where('statusnama', 'Finish');
         $q = $this->db->get('v_bid');

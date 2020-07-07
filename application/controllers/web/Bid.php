@@ -367,9 +367,11 @@ class Bid extends \Restserver\Libraries\REST_Controller
          */
         if (!empty($produkid)) {
             $data = $this->Bid_Model->getBidByProdukId_Bid($produkid);
+            $last = $this->db->last_query();
             $message = array(
                 'status' => true,
-                'data' => $data
+                'data' => $data,
+                'last'=>$last
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
