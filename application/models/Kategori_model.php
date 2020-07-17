@@ -2,7 +2,7 @@
 
 class Kategori_Model extends CI_Model
 {
-    protected $kategori_table = 'm_produkkategori';
+    protected $kategori_table = 'm_produk_kategori';
 
     /**
      * Use Registration
