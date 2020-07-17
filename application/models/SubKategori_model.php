@@ -2,7 +2,7 @@
 
 class SubKategori_Model extends CI_Model
 {
-    protected $SubKategori_table = 'produkkategorisub';
+    protected $SubKategori_table = 'm_produk_kategori_sub';
 
     /**
      * Use Registration
