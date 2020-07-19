@@ -233,7 +233,8 @@ class Bid extends \Restserver\Libraries\REST_Controller
             $userid = $this->get('userId');
             $bidid = $this->get('budId');
             $bidstatusid = $this->get('bidStatusId');
-            $data = $this->Bid_Model->getBidByParam_Bid($produkid, $userid, $bidid,$bidstatusid);
+            $statusnama = $this->get('statusnama');
+            $data = $this->Bid_Model->getBidByParam_Bid($produkid, $userid, $bidid,$bidstatusid,$statusnama);
             if (count($data) <= 0) {
                 $message = array(
                     'status' => $is_valid_token['status'],

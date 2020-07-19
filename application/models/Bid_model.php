@@ -150,7 +150,7 @@ class Bid_Model extends CI_Model
      * ----------------------------------
      * @param: SubBid get by id
      */
-    public function getBidByParam_Bid($produkid = '', $userid = '', $bidid = '', $bidstatusid = '')
+    public function getBidByParam_Bid($produkid = '', $userid = '', $bidid = '', $bidstatusid = '',$statusnama = '')
     {
         if ($produkid != '') {
             $this->db->where('produkid', $produkid);
@@ -163,6 +163,9 @@ class Bid_Model extends CI_Model
         }
         if ($bidstatusid != '') {
             $this->db->where('bidstatusid', $bidstatusid);
+        }
+        if ($statusnama != '') {
+            $this->db->where('statusnama', $statusnama);
         }
         $q = $this->db->get('v_bid');
         return $q->result();
