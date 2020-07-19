@@ -138,7 +138,7 @@ class Bid extends \Restserver\Libraries\REST_Controller
      * Update an Bids with API
      * @method: PUT
      */
-    public function updateBids_put()
+    public function updateBids_post()
     {
         header("Access-Control-Allow-Origin: *");
 
@@ -154,57 +154,84 @@ class Bid extends \Restserver\Libraries\REST_Controller
 
 
             # XSS Filtering (https://www.codeigniter.com/user_guide/libraries/security.html)
-            $_POST = json_decode($this->security->xss_clean(file_get_contents("php://input")), true);
+            // $_POST = json_decode($this->security->xss_clean(file_get_contents("php://input")), true);
 
-            $this->form_validation->set_data([
-                'id' => $this->input->post('id', TRUE),
-                'title' => $this->input->post('title', TRUE),
-                'description' => $this->input->post('description', TRUE),
-            ]);
+            // $this->form_validation->set_data([
+            //     'id' => $this->input->post('id', TRUE),
+            //     'title' => $this->input->post('title', TRUE),
+            //     'description' => $this->input->post('description', TRUE),
+            // ]);
 
             # Form Validation
-            $this->form_validation->set_rules('id', 'Bids ID', 'trim|required|numeric');
-            $this->form_validation->set_rules('title', 'Title', 'trim|required|max_length[50]');
-            $this->form_validation->set_rules('description', 'Description', 'trim|required|max_length[200]');
-            if ($this->form_validation->run() == FALSE) {
-                // Form Validation Errors
-                $message = array(
-                    'status' => false,
-                    'error' => $this->form_validation->error_array(),
-                    'message' => validation_errors()
-                );
-
-                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-            } else {
-                // Load Bids Model
-                $this->load->model('Bid_model', 'BidsModel');
-
-                $update_data = [
-                    'user_id' => $is_valid_token['data']->id,
-                    'id' => $this->input->post('id', TRUE),
-                    'title' => $this->input->post('title', TRUE),
-                    'description' => $this->input->post('description', TRUE),
-                ];
-
-                // Update an Bids
-                $output = $this->Bid_Model->update_Bids($update_data);
-
-                if ($output > 0 and !empty($output)) {
-                    // Success
-                    $message = [
-                        'status' => true,
-                        'message' => "Bids Updated"
-                    ];
-                    $this->response($message, REST_Controller::HTTP_OK);
+            // $this->form_validation->set_rules('id', 'Bids ID', 'trim|required|numeric');
+            // $this->form_validation->set_rules('title', 'Title', 'trim|required|max_length[50]');
+            // $this->form_validation->set_rules('description', 'Description', 'trim|required|max_length[200]');
+            // if ($this->form_validation->run() == FALSE) {
+            // Form Validation Errors
+            $produkid = $_POST['produkid'];
+            $userid = '';
+            $bidid = '';
+            $bidstatusid = '';
+            $statusnama = '';
+            $this->load->model('Bid_model', 'BidsModel');
+            $data = $this->Bid_Model->getBidByParam_Bid($produkid, $userid, $bidid, $bidstatusid, $statusnama);
+            for ($i = 0; $i < count($data); $i++) {
+                if ($_POST['userid'] == $data[$i]->userid) {
+                    $data_update = array(
+                        'userid' => $_POST['userid'],
+                        'produkid' => $produkid,
+                        'bidstatusid' => '10'
+                    );
+                    $update = $this->Bid_Model->updateStatus_Bid($data_update);
                 } else {
-                    // Error
-                    $message = [
-                        'status' => FALSE,
-                        'message' => "Bids not update"
-                    ];
-                    $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+                    $data_update2 = array(
+                        'userid' => $data[$i]->userid,
+                        'produkid' => $data[$i]->produkid,
+                        'bidstatusid' => '9'
+                    );
+                    $update = $this->Bid_Model->updateStatus_Bid($data_update2);
                 }
+                $message = array(
+                    'status' => $update,
+                );
+                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
+            // $message = array(
+            //     'status' => false,
+            //     'message' => $data
+            // );
+
+            // $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+            // } else {
+            // Load Bids Model
+            
+
+            // $update_data = [
+            //     'user_id' => $is_valid_token['data']->id,
+            //     'id' => $this->input->post('id', TRUE),
+            //     'title' => $this->input->post('title', TRUE),
+            //     'description' => $this->input->post('description', TRUE),
+            // ];
+
+            // Update an Bids
+            // $output = $this->Bid_Model->update_Bids($update_data);
+
+            // if ($output > 0 and !empty($output)) {
+            //     // Success
+            //     $message = [
+            //         'status' => true,
+            //         'message' => "Bids Updated"
+            //     ];
+            //     $this->response($message, REST_Controller::HTTP_OK);
+            // } else {
+            //     // Error
+            //     $message = [
+            //         'status' => FALSE,
+            //         'message' => "Bids not update"
+            //     ];
+            //     $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+            // }
+            // }
         } else {
             $this->response(['status' => FALSE, 'message' => $is_valid_token['message']], REST_Controller::HTTP_NOT_FOUND);
         }
@@ -234,18 +261,18 @@ class Bid extends \Restserver\Libraries\REST_Controller
             $bidid = $this->get('budId');
             $bidstatusid = $this->get('bidStatusId');
             $statusnama = $this->get('statusnama');
-            $data = $this->Bid_Model->getBidByParam_Bid($produkid, $userid, $bidid,$bidstatusid,$statusnama);
+            $data = $this->Bid_Model->getBidByParam_Bid($produkid, $userid, $bidid, $bidstatusid, $statusnama);
             if (count($data) <= 0) {
                 $message = array(
                     'status' => $is_valid_token['status'],
                     'data' => $data,
-                    'isBid'=>false
+                    'isBid' => false
                 );
-            }else{
+            } else {
                 $message = array(
                     'status' => $is_valid_token['status'],
                     'data' => $data,
-                    'isBid'=>true
+                    'isBid' => true
                 );
             }
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
@@ -258,7 +285,7 @@ class Bid extends \Restserver\Libraries\REST_Controller
         }
     }
 
-   
+
     /**
      * Get Bid by user id
      * --------------------

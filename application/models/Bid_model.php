@@ -167,8 +167,8 @@ class Bid_Model extends CI_Model
         if ($statusnama != '') {
             $this->db->where('statusnama', $statusnama);
         }
-        $this->db->where('statusnama !=', 'Ditolak');
-        $this->db->where('statusnama !=', 'Batal');
+        // $this->db->where('statusnama !=', 'Ditolak');
+        // $this->db->where('statusnama !=', 'Batal');
         $q = $this->db->get('v_bid');
         return $q->result();
     }
@@ -225,7 +225,8 @@ class Bid_Model extends CI_Model
      */
     public function updateStatus_Bid($data)
     {
-        $this->db->where('bidid', $data->bidid);
+        $this->db->where('userid', $data['userid']);
+        $this->db->where('produkid', $data['produkid']);
         $q =  $this->db->update('t_bids', $data);
         return $q;
     }
