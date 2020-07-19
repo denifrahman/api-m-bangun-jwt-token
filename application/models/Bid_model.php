@@ -165,8 +165,10 @@ class Bid_Model extends CI_Model
             $this->db->where('bidstatusid', $bidstatusid);
         }
         if ($statusnama != '') {
-            $this->db->where('statusnama !=', $statusnama);
+            $this->db->where('statusnama', $statusnama);
         }
+        $this->db->where('statusnama !=', 'Ditolak');
+        $this->db->where('statusnama !=', 'Batal');
         $q = $this->db->get('v_bid');
         return $q->result();
     }
