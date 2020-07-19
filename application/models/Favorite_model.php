@@ -2,7 +2,7 @@
 
 class Favorite_Model extends CI_Model
 {
-    protected $favorite_table = 'fav_produk';
+    protected $favorite_table = 'v_favorite';
 
 
     /**

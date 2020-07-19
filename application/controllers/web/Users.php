@@ -227,6 +227,8 @@ class Users extends \Restserver\Libraries\REST_Controller
                 $jenisAkun = '<span style="color: #248a03; font-weight: 500;">' . $customers->produkkategorisubnama . '</span>';
             } else if ($customers->produkkategorinama == 'Jasa') {
                 $jenisAkun = '<span style="color: orange; font-weight: 500;">' . $customers->produkkategorisubnama . '</span>';
+            }else{
+                $jenisAkun = $customers->produkkategorinama;
             }
 
 
@@ -246,7 +248,7 @@ class Users extends \Restserver\Libraries\REST_Controller
             "recordsTotal" => $this->UserModel->count_all($status, $aktivasi),
             "recordsFiltered" => $this->UserModel->count_filtered($status, $aktivasi),
             "data" => $data,
-            "aktivasi" => $this->db->last_query()
+            "aktivasi" => $list
         );
         $this->response($output);
     }

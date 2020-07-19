@@ -211,26 +211,30 @@ class Produk extends \Restserver\Libraries\REST_Controller
 
         $this->load->library('upload', $config);
 
-        $data_input = $_POST;
-        $output = $this->Produk_Model->updateStatus_Produk($data_input);
+        // $data_input = $_POST;
+        // $output = $this->Produk_Model->updateStatus_Produk($data_input);
 
-        if ($output) {
-            if (!$this->upload->do_upload('nama_file')) {
-                $error = array('error' => $this->upload->display_errors());
-                $message = array(
-                    'status' => true,
-                    'status_update'=>$output,
-                    'message' => $error
-                );
-                $this->response($error);
-            } else {
-                $res = array('upload_data' => $this->upload->data());
-                $message = array(
-                    'status' => true,
-                    'message' => $res
-                );
-            }
+        // if ($output) {
+        if (!$this->upload->do_upload('nama_file')) {
+            $error = array('error' => $this->upload->display_errors());
+            $_POST['produkfile'] = '';
+            $output = $this->Produk_Model->updateStatus_Produk($_POST);
+            $message = array(
+                'status' => true,
+                'data' => $output,
+                'message' => $error
+            );
+            $this->response($error);
+        } else {
+            $res = array('upload_data' => $this->upload->data());
+            $output = $this->Produk_Model->updateStatus_Produk($_POST);
+            $message = array(
+                'status' => true,
+                // 'data'=>$output,
+                'message' => $res
+            );
         }
+        // }
         $this->response($message);
     }
     public function deleteFileByNama_get($nama_file, $id)
