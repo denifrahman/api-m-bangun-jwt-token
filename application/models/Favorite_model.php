@@ -10,7 +10,7 @@ class Favorite_Model extends CI_Model
      * @param: {array} favorite Data
      */
     public function create_Favorite(array $data) {
-        $q = $this->db->insert($this->favorite_table, $data);
+        $q = $this->db->insert('fav_produk', $data);
         return $q;
     }
 
@@ -27,7 +27,7 @@ class Favorite_Model extends CI_Model
         if ($this->db->affected_rows() > 0) {
 
             // Delete Favorite
-            $this->db->delete($this->favorite_table, $data);
+            $this->db->delete('fav_produk', $data);
             if ($this->db->affected_rows() > 0) {
                 return true;
             }
@@ -57,8 +57,12 @@ class Favorite_Model extends CI_Model
      */
     public function getAllByFilterParam_Favorite($produkId = '', $userId = '')
     {
-        $this->db->where('userid',$userId);
-        $this->db->where('produkid', $produkId);
+        if($produkId != ''){
+            $this->db->where('produkid', $produkId);
+        }
+        if($userId != ''){
+            $this->db->where('userid',$userId);
+        }
         $q = $this->db->get($this->favorite_table);
         return $q->result();
     }
