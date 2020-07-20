@@ -100,7 +100,7 @@ class Users extends \Restserver\Libraries\REST_Controller
                 'useremail' => $this->input->post('useremail', TRUE),
                 'usertelp' => $this->input->post('usertelp', TRUE),
                 'userpassword' => $this->crypt->encrypt($this->input->post('userpassword'), 'abcdef0123456789'),
-                'usercreate' => time(),
+                // 'usercreate' => time(),
                 'useraktif' => '1',
                 'userstatusid' => '1',
             );
