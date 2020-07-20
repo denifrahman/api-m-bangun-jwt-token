@@ -167,7 +167,8 @@ class User_Model extends CI_Model
      */
     public function updateAkunPremium_user($data)
     {
-        $query = $this->db->update('user', $data, array('userid' => $data['userid']));
+        $this->db->where('userid', $data['userid']);
+        $query = $this->db->update('user', $data);
         return $query;
     }
 

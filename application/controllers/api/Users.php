@@ -203,7 +203,7 @@ class Users extends \Restserver\Libraries\REST_Controller
         }
     }
 
-     /**
+    /**
      * User Login API
      * --------------------
      * @param: username or email
@@ -220,43 +220,42 @@ class Users extends \Restserver\Libraries\REST_Controller
         $_POST = $this->security->xss_clean($_POST);
 
         # Form Validation
-     
-            // Load Login Function
-            
-            $output = $this->UserModel->login_user($this->post('data_post')['useremail'], $this->post('data_post')['userpassword']);
-            if (!empty($output) and $output != FALSE) {
-                // Load Authorization Token Library
-                $this->load->library('Authorization_Token');
 
-                // Generate Token
-                $token_data['id'] = $output->userid;
-                $token_data['usernama'] = $output->usernama;
-                $token_data['useralamat'] = $output->useralamat;
-                $token_data['time'] = time();
+        // Load Login Function
 
-                $user_token = $this->authorization_token->generateToken($token_data);
+        $output = $this->UserModel->login_user($this->post('data_post')['useremail'], $this->post('data_post')['userpassword']);
+        if (!empty($output) and $output != FALSE) {
+            // Load Authorization Token Library
+            $this->load->library('Authorization_Token');
 
-                $return_data = array(
-                    'data_user' => $output,
-                    'token' => $user_token,
-                );
+            // Generate Token
+            $token_data['id'] = $output->userid;
+            $token_data['usernama'] = $output->usernama;
+            $token_data['useralamat'] = $output->useralamat;
+            $token_data['time'] = time();
 
-                // Login Success
-                $message = array(
-                    'status' => true,
-                    'data' => $output,
-                    'message' => "User login successful"
-                );
-                $this->response($message, REST_Controller::HTTP_OK);
-            } else {
-                // Login Error
-                $message = array(
-                    'status' => FALSE,
-                    'message' => "Invalid Username or Password"
-                );
-                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-            }
-        
+            $user_token = $this->authorization_token->generateToken($token_data);
+
+            $return_data = array(
+                'data_user' => $output,
+                'token' => $user_token,
+            );
+
+            // Login Success
+            $message = array(
+                'status' => true,
+                'data' => $output,
+                'message' => "User login successful"
+            );
+            $this->response($message, REST_Controller::HTTP_OK);
+        } else {
+            // Login Error
+            $message = array(
+                'status' => FALSE,
+                'message' => "Invalid Username or Password"
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
     }
 
     public function createUser_get()
@@ -426,6 +425,35 @@ class Users extends \Restserver\Libraries\REST_Controller
                 );
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
+        } else {
+            $message = array(
+                'status' => false,
+                'error' => $this->form_validation->error_array(),
+                'message' => validation_errors()
+            );
+
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+    /**
+     * Update akun
+     * --------------------
+     * @param: $userid, $usernama, $usertelp, $userpassword
+     * --------------------------
+     * @method : POST
+     * @link: api/users/updateDataAkun
+     */
+    function updateDataAkunPremium_post()
+    {
+        if (isset($_POST)) {
+            $response = $this->UserModel->updateAkunPremium_user($_POST);
+            // // Generate a random name 
+            $message = array(
+                'status' => $response,
+                'message' => "Data berhasil di ubah",
+                'last' => $this->db->last_query()
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
             $message = array(
                 'status' => false,

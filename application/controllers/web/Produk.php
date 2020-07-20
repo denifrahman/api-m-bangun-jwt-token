@@ -217,7 +217,7 @@ class Produk extends \Restserver\Libraries\REST_Controller
         // if ($output) {
         if (!$this->upload->do_upload('nama_file')) {
             $error = array('error' => $this->upload->display_errors());
-            $_POST['produkfile'] = '';
+            // $_POST['produkfile'] = '';
             $output = $this->Produk_Model->updateStatus_Produk($_POST);
             $message = array(
                 'status' => true,
@@ -297,5 +297,67 @@ class Produk extends \Restserver\Libraries\REST_Controller
             );
             $this->response($message);
         }
+    }
+    /**
+     * Produk create
+     * --------------------
+     * --------------------------
+     * @method : GET
+     * @link: api/Produk/create
+     */
+    public function create_post()
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        // $fileName                       =  $_POST['produkthumbnail'];
+        $config['upload_path']          = 'assets/foto_produk';
+        $config['allowed_types']        = 'gif|jpg|png|jpeg|pdf';
+        $config['max_size']             = 10000;
+        $config['max_width']            = 1024;
+        $config['max_height']           = 768;
+        $config['produkthumbnail']            =  'produkthumbnail_'.$_POST['userid'];
+        $config['produkfoto1']            =  'produkfoto1_'.$_POST['userid'];
+        $config['produkfoto2']            =  'produkfoto2_'.$_POST['userid'];
+        $config['produkfoto3']            =  'produkfoto3_'.$_POST['userid'];
+        $config['produkfoto4']            =  'produkfoto4_'.$_POST['userid'];
+
+        $this->load->library('upload', $config);
+
+        // $data_input = $_POST;
+        // $output = $this->Produk_Model->updateStatus_Produk($data_input);
+
+        // if ($output) {
+        if (!$this->upload->do_upload('produkthumbnail') || !$this->upload->do_upload('produkfoto1') || !$this->upload->do_upload('produkfoto2') || !$this->upload->do_upload('produkfoto3') || !$this->upload->do_upload('produkfoto4')) {
+            $error = array('error' => $this->upload->display_errors());
+            // $_POST['produkfile'] = '';
+            // $output = $this->Produk_Model->updateStatus_Produk($_POST);
+            $message = array(
+                'status' => true,
+                // 'data' => $output,
+                'message' => $error
+            );
+            $this->response($error);
+        } else {
+            $res = array('upload_data' => $this->upload->data());
+            // $output = $this->Produk_Model->updateStatus_Produk($_POST);
+            $message = array(
+                'status' => true,
+                // 'data'=>$output,
+                'message' => $res
+            );
+        }
+        // if (isset($_POST)) {
+        //     // $data = $this->Produk_Model->getById_Produk($id);
+        //     $message = array(
+        //         'status' => true,
+        //         'data' => $config
+        //     );
+        //     $this->response($message);
+        // } else {
+        //     $message = array(
+        //         'status' => false,
+        //     );
+        //     $this->response($message);
+        // }
     }
 }
