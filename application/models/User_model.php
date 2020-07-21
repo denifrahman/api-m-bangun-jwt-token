@@ -106,7 +106,7 @@ class User_Model extends CI_Model
     {
         $this->db->where('useremail', $username);
         $this->db->where('userpassword', $password);
-        $q = $this->db->get('user');
+        $q = $this->db->get('v_user');
 
         return $q->row();
     }

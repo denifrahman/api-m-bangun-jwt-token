@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 use Restserver\Libraries\REST_Controller;
 
@@ -6,7 +6,8 @@ require APPPATH . '/libraries/REST_Controller.php';
 
 class Favorite extends \Restserver\Libraries\REST_Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         // Load Favorite Model
         $this->load->model('Favorite_model', 'Favorite_Model');
@@ -29,8 +30,7 @@ class Favorite extends \Restserver\Libraries\REST_Controller
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE)
-        {
+        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
             # Create a User Favorite
 
             # XSS Filtering (https://www.codeigniter.com/user_guide/libraries/security.html)
@@ -39,8 +39,7 @@ class Favorite extends \Restserver\Libraries\REST_Controller
             # Form Validation
             $this->form_validation->set_rules('userid', 'User_Id', 'trim|required');
             $this->form_validation->set_rules('produkid', 'produkId', 'trim|required');
-            if ($this->form_validation->run() == FALSE)
-            {
+            if ($this->form_validation->run() == FALSE) {
                 // Form Validation Errors
                 $message = array(
                     'status' => false,
@@ -49,9 +48,7 @@ class Favorite extends \Restserver\Libraries\REST_Controller
                 );
 
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-            }
-            else
-            {
+            } else {
                 // Load Favorite Model
                 $this->load->model('Favorite_model', 'Favorite_Model');
 
@@ -63,16 +60,14 @@ class Favorite extends \Restserver\Libraries\REST_Controller
                 // Insert Favorite
                 $output = $this->Favorite_Model->create_Favorite($insert_data);
 
-                if ($output > 0 AND !empty($output))
-                {
+                if ($output > 0 and !empty($output)) {
                     // Success
                     $message = [
                         'status' => true,
                         'message' => "Favorite Add"
                     ];
                     $this->response($message, REST_Controller::HTTP_OK);
-                } else
-                {
+                } else {
                     // Error
                     $message = [
                         'status' => FALSE,
@@ -81,9 +76,8 @@ class Favorite extends \Restserver\Libraries\REST_Controller
                     $this->response($message, REST_Controller::HTTP_NOT_FOUND);
                 }
             }
-
         } else {
-            $this->response(['status' => FALSE, 'message' => $is_valid_token['message'] ], REST_Controller::HTTP_NOT_FOUND);
+            $this->response(['status' => FALSE, 'message' => $is_valid_token['message']], REST_Controller::HTTP_NOT_FOUND);
         }
     }
 
@@ -105,14 +99,14 @@ class Favorite extends \Restserver\Libraries\REST_Controller
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
             $data = $this->Favorite_Model->getAll_Favorite();
             $message = array(
                 'status' => $is_valid_token['status'],
                 'data' => $data
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        }else{
+        } else {
             $message = array(
                 'status' => $is_valid_token['status'],
                 'message' => $is_valid_token['message'],
@@ -121,7 +115,7 @@ class Favorite extends \Restserver\Libraries\REST_Controller
         }
     }
 
-     /**
+    /**
      * Favorite Get Data Filter Param
      * --------------------
      * --------------------------
@@ -135,21 +129,22 @@ class Favorite extends \Restserver\Libraries\REST_Controller
 
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
-        $produkId = $this->get('pro_id');
-        $userId = $this->get('userid');
+        $produkId = $this->get('pro_id') == '' || $this->get('pro_id') == null ? '' : $this->get('pro_id');
+        $userId = $this->get('userid') == '' || $this->get('userid') == null ? '' : $this->get('userid');
+        $produkaktif = $this->get('produkaktif') == '' || $this->get('produkaktif') == null ? '' : $this->get('produkaktif');
         /**
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Favorite_Model->getAllByFilterParam_Favorite($produkId, $userId);
+        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
+            $data = $this->Favorite_Model->getAllByFilterParam_Favorite($produkId, $userId,$produkaktif);
             $message = array(
                 'status' => $is_valid_token['status'],
                 'data' => $data,
                 'last' => $this->db->last_query()
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        }else{
+        } else {
             $message = array(
                 'status' => $is_valid_token['status'],
                 'message' => $is_valid_token['message'],
@@ -173,15 +168,13 @@ class Favorite extends \Restserver\Libraries\REST_Controller
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE)
-        {
+        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
             # Delete a User Favorite
 
             # Form Validation
             $this->form_validation->set_rules('userid', 'User_Id', 'trim|required');
             $this->form_validation->set_rules('produkid', 'produkId', 'trim|required');
-            if ($this->form_validation->run() == FALSE)
-            {
+            if ($this->form_validation->run() == FALSE) {
                 // Form Validation Errors
                 $message = array(
                     'status' => false,
@@ -190,9 +183,7 @@ class Favorite extends \Restserver\Libraries\REST_Controller
                 );
 
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-            }
-            else
-            {
+            } else {
                 // Load Favorite Model
                 $this->load->model('Favorite_model', 'Favorite_Model');
 
@@ -204,16 +195,14 @@ class Favorite extends \Restserver\Libraries\REST_Controller
                 // Delete an Favorite
                 $output = $this->Favorite_Model->delete_Favorite($delete_Favorite);
 
-                if ($output > 0 AND !empty($output))
-                {
+                if ($output > 0 and !empty($output)) {
                     // Success
                     $message = [
                         'status' => true,
                         'message' => "Favorite Deleted"
                     ];
                     $this->response($message, REST_Controller::HTTP_OK);
-                } else
-                {
+                } else {
                     // Error
                     $message = [
                         'status' => FALSE,
@@ -222,11 +211,8 @@ class Favorite extends \Restserver\Libraries\REST_Controller
                     $this->response($message, REST_Controller::HTTP_NOT_FOUND);
                 }
             }
-
         } else {
-            $this->response(['status' => FALSE, 'message' => $is_valid_token['message'] ], REST_Controller::HTTP_NOT_FOUND);
+            $this->response(['status' => FALSE, 'message' => $is_valid_token['message']], REST_Controller::HTTP_NOT_FOUND);
         }
     }
-
-
 }

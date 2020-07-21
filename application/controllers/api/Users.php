@@ -101,6 +101,7 @@ class Users extends \Restserver\Libraries\REST_Controller
                 'usertelp' => $this->input->post('usertelp', TRUE),
                 'userpassword' => $this->crypt->encrypt($this->input->post('userpassword'), 'abcdef0123456789'),
                 // 'usercreate' => time(),
+                'userfoto' => 'https://previews.123rf.com/images/urfandadashov/urfandadashov1809/urfandadashov180901275/109135379-photo-not-available-vector-icon-isolated-on-transparent-background-photo-not-available-logo-concept.jpg',
                 'useraktif' => '1',
                 'userstatusid' => '1',
             );

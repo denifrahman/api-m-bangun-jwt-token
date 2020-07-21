@@ -85,6 +85,77 @@ class Produk_Model extends CI_Model
         $this->db->from($this->produk_table);
         return $this->db->count_all_results();
     }
+    /*
+    Fungsi : mengambil data sesuai parameter
+    Parameter :
+    - $param : Berupa nama kolom ( String )
+    - $id : Berupa value dari kolom ( String )
+    - $limit : Berupa limitasi untuk row yang diambil ( int )
+    Return : Array(Array())
+     */
+    private function _get_datatables_query_by_userid($aktif, $status = '', $userid)
+    {
+        if ($status != '') {
+            $this->db->where('statusnama', $status);
+        }
+        $this->db->where('produkaktif', $aktif);
+        $this->db->where('produkkategoriflag', '2');
+        $this->db->where('userid', $userid);
+        $this->db->from($this->produk_table);
+        $i = 0;
+        foreach ($this->column_search as $item) {
+            if ($_POST['search']['value']) // if datatable send POST for search
+            {
+                if ($i === 0) // first loop
+                {
+                    $this->db->group_start();
+                    $this->db->like($item, $_POST['search']['value']);
+                } else {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+                if (count($this->column_search) - 1 == $i) //last loop
+                {
+                    $this->db->group_end();
+                }
+            }
+            $i++;
+        }
+        if (isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        } else if (isset($this->order)) {
+            $order = $this->order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+    public function get_all_by_userid($aktif, $status , $userid)
+    {
+        $this->_get_datatables_query_by_userid($aktif, $status , $userid);
+        if ($_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function count_filtered_by_userid($aktif, $status, $userid)
+    {
+        $this->_get_datatables_query($aktif, $status, $userid);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    public function count_all_by_userid($aktif, $status , $userid)
+    {
+        if ($status != '') {
+            $this->db->where('statusnama', $status);
+        }
+        $this->db->where('userid', $userid);
+        $this->db->where('produkaktif', $aktif);
+        $this->db->where('produkkategoriflag', '2');
+        $this->db->from($this->produk_table);
+        return $this->db->count_all_results();
+    }
 
     /**
      * Produk Login
@@ -134,7 +205,6 @@ class Produk_Model extends CI_Model
     public function getById_Produk($id)
     {
         $this->db->where('Produkid', $id);
-        $this->db->where('Produkaktif', '1');
         $q = $this->db->get($this->produk_table);
         return $q->result();
     }
@@ -174,11 +244,32 @@ class Produk_Model extends CI_Model
         return $q->row();
     }
     /**
-     * update Produk
+     * create Produk
+     * @param array($data);
+     * ----------------------------------
+     */
+    public function create_Produk($data)
+    {
+        $q =  $this->db->insert('produk', $data);
+        return $q;
+    }
+    /**
+     * update Status Produk
      * @param array($data);
      * ----------------------------------
      */
     public function updateStatus_Produk($data)
+    {
+        $this->db->where('produkid', $data['produkid']);
+        $q =  $this->db->update('produk', $data);
+        return $q;
+    }
+    /**
+     * update Produk
+     * @param array($data);
+     * ----------------------------------
+     */
+    public function update_Produk($data)
     {
         $this->db->where('produkid', $data['produkid']);
         $q =  $this->db->update('produk', $data);

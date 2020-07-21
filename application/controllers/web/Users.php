@@ -210,14 +210,15 @@ class Users extends \Restserver\Libraries\REST_Controller
             </div>
         </span>';
 
+        $foto_null = 'https://previews.123rf.com/images/urfandadashov/urfandadashov1809/urfandadashov180901275/109135379-photo-not-available-vector-icon-isolated-on-transparent-background-photo-not-available-logo-concept.jpg';
             $foto = '
         <center>
         <span class="m-topbar__userpic">
-                <img src="' . $customers->userfoto . '" class="m--img-rounded m--marginless" style=width:50px;height:50px;>
+                <img src="' . $customers->userfoto. '" class="m--img-rounded m--marginless" style=width:50px;height:50px;>
         </span>
         </center>';
 
-            $list_tile = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' . $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->usernamalengkap . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . date('d-m-Y', strtotime($customers->usercreate)) . '</a></div></div></span>';
+            $list_tile = '<span style="width: 250px;"><div class="d-flex align-items-center"><div class="symbol symbol-40 symbol-circle symbol-sm">' .  $foto . '</div><div class="ml-3"><div class="text-dark-75 font-weight-bold font-size-lg mb-0">' . $customers->usernamalengkap . '</div><a href="#" class="text-muted font-weight-normal text-hover-primary">' . date('d-m-Y', strtotime($customers->usercreate)) . '</a></div></div></span>';
 
             $btnUpdate = '';
             $jenisAkun = '';
@@ -237,9 +238,11 @@ class Users extends \Restserver\Libraries\REST_Controller
             $row[] = $no;
             $row[] = $list_tile;
             $row[] = $customers->useralamat;
+            $row[] = $customers->userktp;
+            $row[] = $customers->usersiup;
             $row[] = $customers->usercreate;
             $row[] = $jenisAkun;
-            $row[] = $customers->useraktivasiakunpremium == '0' ? '' : '<center><img src="http://localhost:8888/api_jwt/assets/icon/verified.png" class="m--img-rounded m--marginless" style="width:15px; height:15px;"></center>';
+            $row[] = $customers->useraktivasiakunpremium == '0' ? '' : '<center><img src="http://m-bangun.com/api/assets/icon/verified.png" class="m--img-rounded m--marginless" style="width:15px; height:15px;"></center>';
             $row[] = $btnOption;
             $data[] = $row;
         }

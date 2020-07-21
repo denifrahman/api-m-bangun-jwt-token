@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 class Favorite_Model extends CI_Model
 {
@@ -9,7 +9,8 @@ class Favorite_Model extends CI_Model
      * create favorite
      * @param: {array} favorite Data
      */
-    public function create_Favorite(array $data) {
+    public function create_Favorite(array $data)
+    {
         $q = $this->db->insert('fav_produk', $data);
         return $q;
     }
@@ -43,11 +44,11 @@ class Favorite_Model extends CI_Model
      */
     public function getAll_Favorite()
     {
-        $this->db->where('produkFavoriteaktif','1');
+        $this->db->where('produkFavoriteaktif', '1');
         $q = $this->db->get($this->favorite_table);
         return $q->result();
     }
-      /**
+    /**
      * Favorite Get Data Filter Param
      * --------------------
      * --------------------------
@@ -55,26 +56,29 @@ class Favorite_Model extends CI_Model
      * @param : produkFavoriteakses
      * @link: api/Favorite/getAllByFilterParam
      */
-    public function getAllByFilterParam_Favorite($produkId = '', $userId = '')
+    public function getAllByFilterParam_Favorite($produkId, $userId, $produkaktif)
     {
-        if($produkId != ''){
+        if ($produkId != '') {
             $this->db->where('produkid', $produkId);
         }
-        if($userId != ''){
-            $this->db->where('userid',$userId);
+        if ($userId != '') {
+            $this->db->where('userid', $userId);
+        }
+        if ($produkaktif != '') {
+            $this->db->where('produkaktif', $produkaktif);
         }
         $q = $this->db->get($this->favorite_table);
         return $q->result();
     }
-     /**
+    /**
      * SubFavorite get data by id
      * ----------------------------------
      * @param: SubFavorite get by id
      */
     public function getById_Favorite($id)
     {
-        $this->db->where('produkFavoriteid',$id);
-        $this->db->where('produkFavoriteaktif','1');
+        $this->db->where('produkFavoriteid', $id);
+        $this->db->where('produkFavoriteaktif', '1');
         $q = $this->db->get($this->favorite_table);
         return $q->result();
     }
