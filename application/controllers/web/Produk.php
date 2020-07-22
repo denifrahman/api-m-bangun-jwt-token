@@ -87,7 +87,7 @@ class Produk extends \Restserver\Libraries\REST_Controller
               <i class="la la-ellipsis-h"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-32px, 27px, 0px);">
-                <a onclick="getProdukById('.$customers->produkid.')" class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>
+                <a onclick="getProdukById(' . $customers->produkid . ')" class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>
                 <a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>
                 <a class="dropdown-item" href="#"><i class="la la-remove"></i> Reject</a>
             </div>
@@ -395,11 +395,11 @@ class Produk extends \Restserver\Libraries\REST_Controller
             // $this->response(!empty($_FILES['berkas']['name'][$i]));
         }
         $data_insert = array(
-            'produkthumbnail' => base_url().'/assets/foto_produk/'.$data_array[0],
-            'produkfoto1' => base_url().'/assets/foto_produk/'.$data_array[1],
-            'produkfoto2' => base_url().'/assets/foto_produk/'.$data_array[2],
-            'produkfoto3' => base_url().'/assets/foto_produk/'.$data_array[3],
-            'produkfoto4' => base_url().'/assets/foto_produk/'.$data_array[4],
+            'produkthumbnail' => base_url() . '/assets/foto_produk/' . $data_array[0],
+            'produkfoto1' => base_url() . '/assets/foto_produk/' . $data_array[1],
+            'produkfoto2' => base_url() . '/assets/foto_produk/' . $data_array[2],
+            'produkfoto3' => base_url() . '/assets/foto_produk/' . $data_array[3],
+            'produkfoto4' => base_url() . '/assets/foto_produk/' . $data_array[4],
             'produknama' => $_POST['produknama'],
             'produkdeskripsi' => $_POST['produkdeskripsi'],
             'produkkategorisubid' => $_POST['produkkategorisubid'],
@@ -417,7 +417,7 @@ class Produk extends \Restserver\Libraries\REST_Controller
         $message = array(
             'status' => true,
             'data' => $res,
-            'q'=>$this->db->last_query()
+            'q' => $this->db->last_query()
         );
         $this->response($message);
     }
@@ -440,36 +440,7 @@ class Produk extends \Restserver\Libraries\REST_Controller
         $config['max_height']           = 1000;
         $config['encrypt_name']         = true;
         $this->load->library('upload', $config);
-        $keterangan_berkas = $this->input->post('keterangan_berkas');
-        $jumlah_berkas = count($_FILES['berkas']['name']);
-        $data_array = [];
-        for ($i = 0; $i < $jumlah_berkas; $i++) {
-
-            if (!empty($_FILES['berkas']['name'][$i])) {
-                $_FILES['file']['name'] = $_FILES['berkas']['name'][$i];
-                $_FILES['file']['type'] = $_FILES['berkas']['type'][$i];
-                $_FILES['file']['tmp_name'] = $_FILES['berkas']['tmp_name'][$i];
-                $_FILES['file']['error'] = $_FILES['berkas']['error'][$i];
-                $_FILES['file']['size'] = $_FILES['berkas']['size'][$i];
-
-                if ($this->upload->do_upload('file')) {
-                    $uploadData = $this->upload->data();
-                    $data['nama_berkas'] = $uploadData['file_name'];
-                    $data['tipe_berkas'] = $uploadData['file_ext'];
-                    $data['ukuran_berkas'] = $uploadData['file_size'];
-                    array_push($data_array, $uploadData['file_name']);
-                }
-            } else {
-                // $this->response('lengkapi data');    
-            }
-            // $this->response(!empty($_FILES['berkas']['name'][$i]));
-        }
         $data_insert = array(
-            'produkthumbnail' => $data_array == [] || $data_array == '' ? $_POST['produkthumbnail_edit'] :  base_url().'/assets/foto_produk/'.$data_array[0],
-            'produkfoto1' => $data_array == [] || $data_array == '' ? $_POST['produkfoto1_edit'] :  base_url().'/assets/foto_produk/'.$data_array[1],
-            'produkfoto2' => $data_array == [] || $data_array == '' ? $_POST['produkfoto2_edit'] :  base_url().'/assets/foto_produk/'.$data_array[2],
-            'produkfoto3' => $data_array == [] || $data_array == '' ? $_POST['produkfoto3_edit'] :  base_url().'/assets/foto_produk/'.$data_array[3],
-            'produkfoto4' => $data_array == [] || $data_array == '' ? $_POST['produkfoto4_edit'] :  base_url().'/assets/foto_produk/'.$data_array[4],
             'produknama' => $_POST['produknama'],
             'produkdeskripsi' => $_POST['produkdeskripsi'],
             'produkkategorisubid' => $_POST['produkkategorisubid'],
@@ -487,7 +458,34 @@ class Produk extends \Restserver\Libraries\REST_Controller
         $res = $this->Produk_Model->update_Produk($data_insert);
         $message = array(
             'status' => $res,
-            'q'=>$this->db->last_query()
+            // 'q' => $this->db->last_query()
+        );
+        $this->response($message);
+    }
+    /**
+     * Produk Foto update
+     * --------------------
+     * --------------------------
+     * @method : GET
+     * @link: api/Produk/create
+     */
+    public function updateFotoProduk_post()
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        // $fileName                       =  $_POST['produkthumbnail'];
+        $config['upload_path']          = 'assets/foto_produk';
+        $config['allowed_types']        = 'gif|jpeg|jpg|png';
+        $config['max_size']             = 1500;
+        $config['max_width']            = 2048;
+        $config['max_height']           = 1000;
+        $config['encrypt_name']         = true;
+        $this->load->library('upload', $config);
+        
+        // $res = $this->Produk_Model->update_Produk($data_insert);
+        $message = array(
+            'status' => $_POST,
+            'q' => $this->db->last_query()
         );
         $this->response($message);
     }

@@ -101,7 +101,7 @@ class Users extends \Restserver\Libraries\REST_Controller
                 'usertelp' => $this->input->post('usertelp', TRUE),
                 'userpassword' => $this->crypt->encrypt($this->input->post('userpassword'), 'abcdef0123456789'),
                 // 'usercreate' => time(),
-                'userfoto' => 'https://previews.123rf.com/images/urfandadashov/urfandadashov1809/urfandadashov180901275/109135379-photo-not-available-vector-icon-isolated-on-transparent-background-photo-not-available-logo-concept.jpg',
+                'userfoto' => 'http://m-bangun.com/api/assets/icon/nofoto.jpg',
                 'useraktif' => '1',
                 'userstatusid' => '1',
             );
@@ -169,7 +169,7 @@ class Users extends \Restserver\Libraries\REST_Controller
         } else {
             // Load Login Function
             $output = $this->UserModel->login_user($this->input->post('useremail'), $this->crypt->encrypt($this->input->post('userpassword'), 'abcdef0123456789'));
-            if (!empty($output) and $output != FALSE) {
+            if (!empty($output) and $output != FALSE and $output->useraktif != '0' and $output->produkkategoriflag != '2') {
                 // Load Authorization Token Library
                 $this->load->library('Authorization_Token');
 
