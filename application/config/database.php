@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'speedrockygym.com',
+	'hostname' => 'm-bangun.com',
 	'username' => 'n9419307_m-bangun',
 	'password' => 'denifa2412',
-	'database' => 'n9419307_m-bangun',
+	'database' => 'n9419307_m-bangun-v2',
 	// 'port' => 8889,
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
