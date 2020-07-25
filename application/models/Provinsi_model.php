@@ -4,35 +4,58 @@ class Provinsi_Model extends CI_Model
 {
     protected $Provinsi_table = 'm_ipropinsi';
 
-    /**
-     * Use Registration
-     * @param: {array} Provinsi Data
-     */
-    public function insert_Provinsi(array $data) {
-        $this->db->insert($this->Provinsi_table, $data);
-        return $this->db->insert_id();
-    }
-
-    /**
-     * Provinsi Login
+  /**
+     * provinsi By Parameter
      * ----------------------------------
-     * @param: Provinsiname or email address
+     * @param: provinsiname or email address
      * @param: password
      */
-    public function getAll_Provinsi()
+    public function getAllByParam($param)
     {
-        $q = $this->db->get($this->Provinsi_table);
-        return $q->result();
+        $query_array = array();
+
+        foreach ($param as $key => $value) {
+            if ($value != '') {
+                $query_array[] = $key . ' = ' . $value;
+            }
+        }
+        if (count($query_array) < 1) {
+            $query = "SELECT * FROM m_provinsi ";
+        } else {
+            $query = "SELECT * FROM m_provinsi " . "Where " . implode(" AND ", $query_array);
+        }
+        return $this->db->query($query)->result();
     }
-     /**
-     * SubProvinsi get data by id
+    /**
+     * create provinsi
+     * @param array($data);
      * ----------------------------------
-     * @param: SubProvinsi get by id
      */
-    public function getById_Provinsi($id)
+    public function create($body)
     {
-        $this->db->where('id_propinsi',$id);
-        $q = $this->db->get($this->Provinsi_table);
-        return $q->row();
+        $q =  $this->db->insert('m_provinsi', $body);
+        return $q;
+    }
+    /** 
+     * update Status provinsi
+     * @param array($data);
+     * ----------------------------------
+     */
+    public function update($body)
+    {
+        $this->db->where('provinsi_id', $body['provinsi_id']);
+        $q =  $this->db->update('m_provinsi', $body);
+        return $q;
+    }
+    /**
+     * delete provinsi
+     * @param array($data);
+     * ----------------------------------
+     */
+    public function delete($body)
+    {
+        $this->db->where('provinsi_id', $body['provinsi_id']);
+        $q =  $this->db->update('m_provinsi', $body);
+        return $q;
     }
 }

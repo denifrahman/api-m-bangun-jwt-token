@@ -14,76 +14,7 @@ class Kategori extends \Restserver\Libraries\REST_Controller
         $this->load->library('crypt');
     }
 
-    /**
-     * Kategori Get All Data
-     * --------------------
-     * --------------------------
-     * @method : GET
-     * @link: api/Kategori/getAll
-     */
-    public function getAll_get()
-    {
-        header("Access-Control-Allow-Origin: *");
-
-        // Load Authorization Token Library
-        $this->load->library('Authorization_Token');
-
-        /**
-         * User Token Validation
-         */
-        $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
-            $data = $this->Kategori_Model->getAll_Kategori();
-            $message = array(
-                'status' => $is_valid_token['status'],
-                'data' => $data
-            );
-            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        } else {
-            $message = array(
-                'status' => $is_valid_token['status'],
-                'message' => $is_valid_token['message'],
-            );
-            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        }
-    }
-
-    /**
-     * Kategori Get Data Filter Param
-     * --------------------
-     * --------------------------
-     * @method : GET
-     * @param : Kategorikategoriakses
-     * @link: api/Kategori/getAllByFilterParam
-     */
-    public function getAllByFilterParam_get()
-    {
-        header("Access-Control-Allow-Origin: *");
-
-        // Load Authorization Token Library
-        $this->load->library('Authorization_Token');
-        $akses = $this->input->get('akses');
-        /**
-         * User Token Validation
-         */
-        $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
-            $data = $this->Kategori_Model->getAllByFilterParam_Kategori($akses);
-            $message = array(
-                'status' => $is_valid_token['status'],
-                'data' => $data
-            );
-            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        } else {
-            $message = array(
-                'status' => $is_valid_token['status'],
-                'message' => $is_valid_token['message'],
-            );
-            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        }
-    }
-
-    /**
+     /**
      * Kategori Get Data
      * --------------------
      * --------------------------
@@ -92,31 +23,26 @@ class Kategori extends \Restserver\Libraries\REST_Controller
      */
     public function getAllByParam_get()
     {
-        $produkkategoriid = $this->get('produkkategoriid');
-        $produkkategorinama = $this->get('produkkategorinama');
-        $produkkategoriaktif = $this->get('produkkategoriaktif');
-        $produkkategoriakses = $this->get('produkkategoriakses');
-        $produkkategorireq = $this->get('produkkategorireq');
-        $produkkategoriflag = $this->get('produkkategoriflag');
         header("Access-Control-Allow-Origin: *");
-
+        
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
-
+        
         /**
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
-            $data = $this->Kategori_Model->getAllByParam_kategori($produkkategoriid, $produkkategorinama,  $produkkategoriakses, $produkkategorireq, $produkkategoriflag, $produkkategoriaktif);
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $query_param = $_GET;
+            $data = $this->Kategori_Model->getAllByParam($query_param);
             $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
                 'data' => $data,
-                'last' => $qry
+                'last'=>$qry
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        } else {
+        }else{
             $message = array(
                 'status' => $is_valid_token['status'],
                 'message' => $is_valid_token['message'],
@@ -124,54 +50,36 @@ class Kategori extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
+
     /**
-     * Kategori Get Data
+     * create
      * --------------------
      * --------------------------
-     * @method : GET
+     * @method : POST
      * @link: api/Kategori/getAll
      */
-    public function getAllGroupByParam_get()
+    public function create_post()
     {
-        $produkkategoriid = $this->get('produkkategoriid');
-        $produkkategorinama = $this->get('produkkategorinama');
-        $produkkategoriaktif = $this->get('produkkategoriaktif');
-        $produkkategoriakses = $this->get('produkkategoriakses');
-        $produkkategorireq = $this->get('produkkategorireq');
-        $produkkategoriflag = $this->get('produkkategoriflag');
         header("Access-Control-Allow-Origin: *");
-
+        
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
-
+        
         /**
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
-            $data =$this->Kategori_Model->getAllByParam_kategori($produkkategoriid, $produkkategorinama,  $produkkategoriakses, $produkkategorireq, $produkkategoriflag, $produkkategoriaktif);
-            $tmp = array();
-
-            foreach ($data as $arg) {
-                $tmp[$arg->produkkategoriflag][] = $arg;
-            }
-
-            $output = array();
-            
-            foreach ($tmp as $type => $labels) {
-                $output[] = array(
-                    'flag' => $type,
-                    'chilrdern'=>$labels
-                );
-            }
-            // var_dump($output);
-            // die;
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $body = $_POST;
+            $data = $this->Kategori_Model->create($body);
+            $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
-                'data' => $output,
+                'data' => $data,
+                'last'=>$qry
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        } else {
+        }else{
             $message = array(
                 'status' => $is_valid_token['status'],
                 'message' => $is_valid_token['message'],
@@ -179,34 +87,71 @@ class Kategori extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
-
-    /**
-     * Kategori Get Data All By id 
+     /**
+     * update
      * --------------------
      * --------------------------
-     * @method : GET
-     * @param : kategoriid
-     * @link: api/Kategori/getAllById
+     * @method : PUT
+     * @link: api/Kategori/update
      */
-    public function getAllById_get($id)
+    public function update_post()
     {
         header("Access-Control-Allow-Origin: *");
-
+        
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
-
+        
         /**
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
-        if (!empty($is_valid_token) and $is_valid_token['status'] === TRUE) {
-            $data = $this->Kategori_Model->getById_Kategori($id);
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $body = $_POST;
+            $data = $this->Kategori_Model->update($body);
+            $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
-                'data' => $data
+                'data' => $data,
+                'last'=>$qry
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        } else {
+        }else{
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'message' => $is_valid_token['message'],
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+     /**
+     * delete
+     * --------------------
+     * --------------------------
+     * @method : PUT
+     * @link: api/Kategori/update
+     */
+    public function delete_post()
+    {
+        header("Access-Control-Allow-Origin: *");
+        
+        // Load Authorization Token Library
+        $this->load->library('Authorization_Token');
+        
+        /**
+         * User Token Validation
+         */
+        $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $body = $_POST;
+            $data = $this->Kategori_Model->delete($body);
+            $qry = $this->db->last_query();
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'data' => $data,
+                'last'=>$qry
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }else{
             $message = array(
                 'status' => $is_valid_token['status'],
                 'message' => $is_valid_token['message'],

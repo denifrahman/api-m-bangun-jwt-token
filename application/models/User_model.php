@@ -104,9 +104,9 @@ class User_Model extends CI_Model
      */
     public function login_user($username, $password)
     {
-        $this->db->where('useremail', $username);
-        $this->db->where('userpassword', $password);
-        $q = $this->db->get('v_user');
+        $this->db->where('user_email', $username);
+        $this->db->where('user_password', $password);
+        $q = $this->db->get('user');
 
         return $q->row();
     }

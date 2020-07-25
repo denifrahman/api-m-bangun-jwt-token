@@ -4,36 +4,58 @@ class Kota_Model extends CI_Model
 {
     protected $Kota_table = 'm_ikabkota';
 
-    /**
-     * Use Registration
-     * @param: {array} Kota Data
-     */
-    public function insert_Kota(array $data) {
-        $this->db->insert($this->Kota_table, $data);
-        return $this->db->insert_id();
-    }
-
-    /**
-     * Kota Login
+  /**
+     * kota By Parameter
      * ----------------------------------
-     * @param: Kotaname or email address
+     * @param: kotaname or email address
      * @param: password
      */
-    public function getAllByIdProvinsi_Kota($idProvinsi)
+    public function getAllByParam($param)
     {
-        $this->db->where('id_propinsi',$idProvinsi);
-        $q = $this->db->get($this->Kota_table);
-        return $q->result();
+        $query_array = array();
+
+        foreach ($param as $key => $value) {
+            if ($value != '') {
+                $query_array[] = $key . ' = ' . $value;
+            }
+        }
+        if (count($query_array) < 1) {
+            $query = "SELECT * FROM m_kota ";
+        } else {
+            $query = "SELECT * FROM m_kota " . "Where " . implode(" AND ", $query_array);
+        }
+        return $this->db->query($query)->result();
     }
-     /**
-     * SubKota get data by id
+    /**
+     * create kota
+     * @param array($data);
      * ----------------------------------
-     * @param: SubKota get by id
      */
-    public function getById_Kota($id)
+    public function create($body)
     {
-        $this->db->where('id_kabkota',$id);
-        $q = $this->db->get($this->Kota_table);
-        return $q->row();
+        $q =  $this->db->insert('m_kota', $body);
+        return $q;
+    }
+    /**
+     * update Status kota
+     * @param array($data);
+     * ----------------------------------
+     */
+    public function update($body)
+    {
+        $this->db->where('kota_id', $body['kota_id']);
+        $q =  $this->db->update('m_kota', $body);
+        return $q;
+    }
+    /**
+     * delete kota
+     * @param array($data);
+     * ----------------------------------
+     */
+    public function delete($body)
+    {
+        $this->db->where('kota_id', $body['kota_id']);
+        $q =  $this->db->update('m_kota', $body);
+        return $q;
     }
 }

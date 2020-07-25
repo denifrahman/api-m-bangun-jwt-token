@@ -155,8 +155,8 @@ class Users extends \Restserver\Libraries\REST_Controller
         $_POST = $this->security->xss_clean($_POST);
 
         # Form Validation
-        $this->form_validation->set_rules('useremail', 'Useremail', 'trim|required');
-        $this->form_validation->set_rules('userpassword', 'Userpassword', 'trim|required|max_length[100]');
+        $this->form_validation->set_rules('user_email', 'Useremail', 'trim|required');
+        $this->form_validation->set_rules('user_password', 'Userpassword', 'trim|required|max_length[100]');
         if ($this->form_validation->run() == FALSE) {
             // Form Validation Errors
             $message = array(
@@ -168,15 +168,15 @@ class Users extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
             // Load Login Function
-            $output = $this->UserModel->login_user($this->input->post('useremail'), $this->crypt->encrypt($this->input->post('userpassword'), 'abcdef0123456789'));
-            if (!empty($output) and $output != FALSE and $output->useraktif != '0' and $output->produkkategoriflag != '2') {
+            $output = $this->UserModel->login_user($this->input->post('user_email'), $this->crypt->encrypt($this->input->post('user_password'), 'abcdef0123456789'));
+            if (!empty($output) and $output != FALSE) {
                 // Load Authorization Token Library
                 $this->load->library('Authorization_Token');
 
                 // Generate Token
-                $token_data['id'] = $output->userid;
-                $token_data['usernama'] = $output->usernama;
-                $token_data['useralamat'] = $output->useralamat;
+                $token_data['id'] = $output->user_id;
+                $token_data['user_nama_lengkap'] = $output->user_nama_lengkap;
+                $token_data['user_alamat_lengkap'] = $output->user_alamat_lengkap;
                 $token_data['time'] = time();
 
                 $user_token = $this->authorization_token->generateToken($token_data);

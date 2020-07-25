@@ -22,26 +22,18 @@ class Produk extends \Restserver\Libraries\REST_Controller
      */
     public function getAllByParam_get()
     {
-        $idKecamatan = $this->get('kec');
-        $idKota = $this->get('kota');
-        $idProvinsi = $this->get('prov');
-        $idSubKategori = $this->get('sub');
-        $key = $this->get('key');
-        $userId = $this->get('userid');
-        $stproduk = $this->get('stp');
-        $produkId = $this->get('pro_id');
-
         header("Access-Control-Allow-Origin: *");
-
+        
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
-
+        
         /**
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
         if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Produk_Model->getAllByParam_Produk($idKecamatan,$idKota,$idProvinsi, $idSubKategori,$key,$userId,$stproduk,$produkId);
+            $query_param = $_GET;
+            $data = $this->Produk_Model->getAllByParam($query_param);
             $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
@@ -57,29 +49,105 @@ class Produk extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
-      /**
-     * Produk Get Data
+
+    /**
+     * create
      * --------------------
      * --------------------------
-     * @method : GET
-     * @link: api/Produk/getAllById
+     * @method : POST
+     * @link: api/Produk/getAll
      */
-    public function getById_get($id)
+    public function create_post()
     {
         header("Access-Control-Allow-Origin: *");
-
+        
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
-
+        
         /**
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
         if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Produk_Model->getById_Produk($id);
+            $body = $_POST;
+            $data = $this->Produk_Model->create($body);
+            $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
-                'data' => $data
+                'data' => $data,
+                'last'=>$qry
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }else{
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'message' => $is_valid_token['message'],
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+     /**
+     * update
+     * --------------------
+     * --------------------------
+     * @method : PUT
+     * @link: api/Produk/update
+     */
+    public function update_post()
+    {
+        header("Access-Control-Allow-Origin: *");
+        
+        // Load Authorization Token Library
+        $this->load->library('Authorization_Token');
+        
+        /**
+         * User Token Validation
+         */
+        $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $body = $_POST;
+            $data = $this->Produk_Model->update($body);
+            $qry = $this->db->last_query();
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'data' => $data,
+                'last'=>$qry
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }else{
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'message' => $is_valid_token['message'],
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+     /**
+     * delete
+     * --------------------
+     * --------------------------
+     * @method : PUT
+     * @link: api/Produk/update
+     */
+    public function delete_post()
+    {
+        header("Access-Control-Allow-Origin: *");
+        
+        // Load Authorization Token Library
+        $this->load->library('Authorization_Token');
+        
+        /**
+         * User Token Validation
+         */
+        $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $body = $_POST;
+            $data = $this->Produk_Model->delete($body);
+            $qry = $this->db->last_query();
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'data' => $data,
+                'last'=>$qry
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }else{

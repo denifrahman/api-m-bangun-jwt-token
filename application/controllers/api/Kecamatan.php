@@ -13,29 +13,32 @@ class Kecamatan extends \Restserver\Libraries\REST_Controller
         $this->load->library('crypt'); 
     }
 
-    /**
+     /**
      * Kecamatan Get Data
      * --------------------
      * --------------------------
      * @method : GET
      * @link: api/Kecamatan/getAll
      */
-    public function getAllByIdKota_get($idKota)
+    public function getAllByParam_get()
     {
         header("Access-Control-Allow-Origin: *");
-    
+        
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
-
+        
         /**
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
         if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Kecamatan_Model->getAllByIdKota_kecamatan($idKota);
+            $query_param = $_GET;
+            $data = $this->Kecamatan_Model->getAllByParam($query_param);
+            $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
-                'data' => $data
+                'data' => $data,
+                'last'=>$qry
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }else{
@@ -46,29 +49,105 @@ class Kecamatan extends \Restserver\Libraries\REST_Controller
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
     }
-      /**
-     * Kecamatan Get Data
+
+    /**
+     * create
      * --------------------
      * --------------------------
-     * @method : GET
-     * @link: api/Kecamatan/getAllById
+     * @method : POST
+     * @link: api/Kecamatan/getAll
      */
-    public function getById_get($id)
+    public function create_post()
     {
         header("Access-Control-Allow-Origin: *");
-    
+        
         // Load Authorization Token Library
         $this->load->library('Authorization_Token');
-
+        
         /**
          * User Token Validation
          */
         $is_valid_token = $this->authorization_token->validateToken();
         if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
-            $data = $this->Kecamatan_Model->getById_Kecamatan($id);
+            $body = $_POST;
+            $data = $this->Kecamatan_Model->create($body);
+            $qry = $this->db->last_query();
             $message = array(
                 'status' => $is_valid_token['status'],
-                'data' => $data
+                'data' => $data,
+                'last'=>$qry
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }else{
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'message' => $is_valid_token['message'],
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+     /**
+     * update
+     * --------------------
+     * --------------------------
+     * @method : PUT
+     * @link: api/Kecamatan/update
+     */
+    public function update_post()
+    {
+        header("Access-Control-Allow-Origin: *");
+        
+        // Load Authorization Token Library
+        $this->load->library('Authorization_Token');
+        
+        /**
+         * User Token Validation
+         */
+        $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $body = $_POST;
+            $data = $this->Kecamatan_Model->update($body);
+            $qry = $this->db->last_query();
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'data' => $data,
+                'last'=>$qry
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }else{
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'message' => $is_valid_token['message'],
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+     /**
+     * delete
+     * --------------------
+     * --------------------------
+     * @method : PUT
+     * @link: api/Kecamatan/update
+     */
+    public function delete_post()
+    {
+        header("Access-Control-Allow-Origin: *");
+        
+        // Load Authorization Token Library
+        $this->load->library('Authorization_Token');
+        
+        /**
+         * User Token Validation
+         */
+        $is_valid_token = $this->authorization_token->validateToken();
+        if (!empty($is_valid_token) AND $is_valid_token['status'] === TRUE){
+            $body = $_POST;
+            $data = $this->Kecamatan_Model->delete($body);
+            $qry = $this->db->last_query();
+            $message = array(
+                'status' => $is_valid_token['status'],
+                'data' => $data,
+                'last'=>$qry
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }else{
